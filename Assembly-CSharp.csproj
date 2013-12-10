@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{E775D789-9E6E-CEC1-50E7-F6DE5605464C}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_WEBPLAYER;WEBPLUG;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_1;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\LevelCreation.cs" />
+     <Compile Include="Assets\MoveAround.cs" />
+     <Compile Include="Assets\spine-csharp\Properties\AssemblyInfo.cs" />
+     <Compile Include="Assets\spine-csharp\src\Animation.cs" />
+     <Compile Include="Assets\spine-csharp\src\AnimationState.cs" />
+     <Compile Include="Assets\spine-csharp\src\AnimationStateData.cs" />
+     <Compile Include="Assets\spine-csharp\src\Atlas.cs" />
+     <Compile Include="Assets\spine-csharp\src\Attachments\AtlasAttachmentLoader.cs" />
+     <Compile Include="Assets\spine-csharp\src\Attachments\Attachment.cs" />
+     <Compile Include="Assets\spine-csharp\src\Attachments\AttachmentLoader.cs" />
+     <Compile Include="Assets\spine-csharp\src\Attachments\AttachmentType.cs" />
+     <Compile Include="Assets\spine-csharp\src\Attachments\BoundingBoxAttachment.cs" />
+     <Compile Include="Assets\spine-csharp\src\Attachments\RegionAttachment.cs" />
+     <Compile Include="Assets\spine-csharp\src\Bone.cs" />
+     <Compile Include="Assets\spine-csharp\src\BoneData.cs" />
+     <Compile Include="Assets\spine-csharp\src\Event.cs" />
+     <Compile Include="Assets\spine-csharp\src\EventData.cs" />
+     <Compile Include="Assets\spine-csharp\src\Json.cs" />
+     <Compile Include="Assets\spine-csharp\src\Skeleton.cs" />
+     <Compile Include="Assets\spine-csharp\src\SkeletonBounds.cs" />
+     <Compile Include="Assets\spine-csharp\src\SkeletonData.cs" />
+     <Compile Include="Assets\spine-csharp\src\SkeletonJson.cs" />
+     <Compile Include="Assets\spine-csharp\src\Skin.cs" />
+     <Compile Include="Assets\spine-csharp\src\Slot.cs" />
+     <Compile Include="Assets\spine-csharp\src\SlotData.cs" />
+     <Compile Include="Assets\spine-unity\Assets\Spine\AtlasAsset.cs" />
+     <Compile Include="Assets\spine-unity\Assets\Spine\SkeletonAnimation.cs" />
+     <Compile Include="Assets\spine-unity\Assets\Spine\SkeletonComponent.cs" />
+     <Compile Include="Assets\spine-unity\Assets\Spine\SkeletonDataAsset.cs" />
+     <Compile Include="Assets\spine-unity\Assets\examples\goblins\Goblins.cs" />
+     <Compile Include="Assets\spine-unity\Assets\examples\spineboy\Spineboy.cs" />
+     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.atlas.txt" />
+     <None Include="Assets\Runner-penguin\penguin.atlas.txt" />
+     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.json.txt" />
+     <None Include="Assets\Runner-penguin\penguin.json.txt" />
+     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.json.txt" />
+     <None Include="Assets\spine-unity\Assets\Spine\Shaders\Skeleton.shader" />
+     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.atlas.txt" />
+     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.atlas.txt" />
+     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.json.txt" />
+     <None Include="Assets\spine-unity\Assets\Spine\Shaders\SkeletonLit.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
+      <Project>{E599603F-A1EF-52FA-DCD5-D34147818FAC}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
