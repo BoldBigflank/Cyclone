@@ -98,11 +98,12 @@ public class LevelCreation : MonoBehaviour {
 
 //			GameObject[] LevelSegments = GameObject.FindGameObjectsWithTag("LevelSegment");
 			if(segments.Count > 0 ){
-				Debug.Log ("Time to delete");
-				Rigidbody segmentToDestroy = (Rigidbody) segments[0];
+				Debug.Log ("Time to delete", segments[0]);
+				Rigidbody segmentToDestroy = segments[0];
 
 				segments.Remove(segmentToDestroy);
-				Destroy (segmentToDestroy);
+
+				Destroy ( segmentToDestroy.gameObject);
 
 			}
 
