@@ -2,46 +2,77 @@
 using System.Collections;
 
 public class MoveAround : MonoBehaviour {
+	// World Stat
+	bool gameIsRunning; // Duplicate
+
 	// Character stats
 	CharacterController controller;
+	GameObject gameController;
+	public float startingSpeed = 30.0F;
 	float speed = 180.0F;
 	float forwardSpeed = 30.0F;
+	public static float score = 0.0F;
 
 	// Use this for initialization
 	void Start () {
 		Input.simulateMouseWithTouches = true;
+		forwardSpeed = 0.0F;
+		gameIsRunning = false;
+		controller = GetComponent<CharacterController>();
+		gameController = GameObject.FindGameObjectWithTag("GameController");
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		CharacterController controller = GetComponent<CharacterController>();
-
-		int rotateDirection = 0;
-		if( Input.GetMouseButton(0) ){
-			Vector3 mousePos = Input.mousePosition;
-			if(mousePos.x < Screen.width/2) rotateDirection = -1;
-			else rotateDirection = 1;
+		if(gameIsRunning) {
+			forwardSpeed += Time.deltaTime;
+			int rotateDirection = 0;
+			if( Input.GetMouseButton(0) ){
+				Vector3 mousePos = Input.mousePosition;
+				if(mousePos.x < Screen.width/2) rotateDirection = -1;
+				if(mousePos.x >= Screen.width/2) rotateDirection = 1;
+			}
+			
+			// Rotate the sphere around the middle axis with <-/-> and A/D
+			//		transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed); // Arrow keys
+			transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
+			
+			// Move the sphere forward with ^/v for now
+			
+			float curSpeed = forwardSpeed * Input.GetAxis("Vertical");
+			
+			controller.Move(Vector3.forward * forwardSpeed * Time.deltaTime ); // Auto
+			//		controller.Move(Vector3.forward * curSpeed * Time.deltaTime ); // Manual forward movement
 		}
 
-		// Rotate the sphere around the middle axis with <-/-> and A/D
-//		transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed); // Arrow keys
-		transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
-
-		// Move the sphere forward with ^/v for now
-		Vector3 forward = transform.TransformDirection(Vector3.forward); // Not sure if should use this
-		float curSpeed = forwardSpeed * Input.GetAxis("Vertical");
-
-//		controller.Move(Vector3.forward * forwardSpeed * Time.deltaTime ); // Auto
-		controller.Move(Vector3.forward * curSpeed * Time.deltaTime ); // Manual forward movement
 
 
 
+
+	}
+
+	void Reset(){
+		Debug.Log ("MoveAround - Reset");
+		transform.position = new Vector3(0.0F, -4.5F, 10.0F);
+		forwardSpeed = startingSpeed;
+		gameIsRunning = true;
+	}
+
+	void GameOver(){
+		forwardSpeed = 0.0F;
+		gameIsRunning = false;
+	}
+
+	int GetScore(){
+		return 666;
 	}
 
 	void OnTriggerEnter(Collider obj) {
 		if(obj.tag == "Obstacle"){
 			Debug.Log("Collided"+ obj.tag + "(" + obj.transform.position.x + ", " + obj.transform.position.y + ", " + obj.transform.position.z + ")");
 			obj.renderer.material.SetColor ("_Color", Color.black);
+			GameOver();
+			gameController.SendMessage ("GameOver");
 		}
 		//	if (obj.gameObject.name == "Shark") {
 		//		//reset shark
@@ -49,6 +80,10 @@ public class MoveAround : MonoBehaviour {
 		//		obj.gameObject.transform.position = new Vector3(20f, -3f, 8f);
 		//		Destroy(this.gameObject);
 		//	}
+	}
+
+	void OnGUI(){
+
 	}
 
 }
