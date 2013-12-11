@@ -3,7 +3,8 @@ var damping = 6.0;
 var smooth = true;
 // The distance in the x-z plane to the target
 var distance = 10.0;
-
+var radius = .75;
+var period = 8;
 
 @script AddComponentMenu("Camera-Control/Smooth Look At")
 
@@ -23,6 +24,9 @@ function LateUpdate () {
 		}
 		
 		transform.position.z = target.position.z - distance;
+		transform.position.x = radius * Mathf.Sin( transform.position.z /( Mathf.PI * period) );
+		transform.position.y = radius * Mathf.Cos( transform.position.z /( Mathf.PI * period) );
+		
 
 	}
 }

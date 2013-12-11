@@ -34,7 +34,6 @@ public class LevelCreation : MonoBehaviour {
 		colors = new List<Color>();
 		colors.Add(Color.red);
 		colors.Add(Color.yellow);
-
 		colors.Add(Color.green);
 		colors.Add(Color.cyan);
 		colors.Add(Color.blue);
@@ -74,16 +73,12 @@ public class LevelCreation : MonoBehaviour {
 			segments.Add (instantiatedCylinder);
 			drawnPosition += 50.0F;
 
-			// Add an obstacle
-//			float posX = Random.Range (1,3);
-//			if(posX == 1) posX = -5.0F;
-//			else posX = 5.0F;
-//			float posY = Random.Range (1,3);
-//			if( posY == 1 ) posY = -5.0F;
-//			else posY = 5.0F;
-			int angle = Random.Range (0, 8)  * 45;
-			Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacles[0], new Vector3(5.0F, 5.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 45.0F ));
-			instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, angle);
+			if((int)drawnPosition > 50){ // The first one triggers the collision at launch
+				// Add an obstacle
+				int angle = Random.Range (0, 8)  * 45;
+				Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacles[0], new Vector3(-5.0F, -5.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
+				instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, angle);
+			}
 
 			// Change the lamp's color
 			if(tColor >= 1.0F) SetColor(); // Start the new color
