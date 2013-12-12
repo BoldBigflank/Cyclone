@@ -48,47 +48,15 @@
   <ItemGroup>
      <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\MoveAround.cs" />
-     <Compile Include="Assets\spine-csharp\Properties\AssemblyInfo.cs" />
-     <Compile Include="Assets\spine-csharp\src\Animation.cs" />
-     <Compile Include="Assets\spine-csharp\src\AnimationState.cs" />
-     <Compile Include="Assets\spine-csharp\src\AnimationStateData.cs" />
-     <Compile Include="Assets\spine-csharp\src\Atlas.cs" />
-     <Compile Include="Assets\spine-csharp\src\Attachments\AtlasAttachmentLoader.cs" />
-     <Compile Include="Assets\spine-csharp\src\Attachments\Attachment.cs" />
-     <Compile Include="Assets\spine-csharp\src\Attachments\AttachmentLoader.cs" />
-     <Compile Include="Assets\spine-csharp\src\Attachments\AttachmentType.cs" />
-     <Compile Include="Assets\spine-csharp\src\Attachments\BoundingBoxAttachment.cs" />
-     <Compile Include="Assets\spine-csharp\src\Attachments\RegionAttachment.cs" />
-     <Compile Include="Assets\spine-csharp\src\Bone.cs" />
-     <Compile Include="Assets\spine-csharp\src\BoneData.cs" />
-     <Compile Include="Assets\spine-csharp\src\Event.cs" />
-     <Compile Include="Assets\spine-csharp\src\EventData.cs" />
-     <Compile Include="Assets\spine-csharp\src\Json.cs" />
-     <Compile Include="Assets\spine-csharp\src\Skeleton.cs" />
-     <Compile Include="Assets\spine-csharp\src\SkeletonBounds.cs" />
-     <Compile Include="Assets\spine-csharp\src\SkeletonData.cs" />
-     <Compile Include="Assets\spine-csharp\src\SkeletonJson.cs" />
-     <Compile Include="Assets\spine-csharp\src\Skin.cs" />
-     <Compile Include="Assets\spine-csharp\src\Slot.cs" />
-     <Compile Include="Assets\spine-csharp\src\SlotData.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\AtlasAsset.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\SkeletonAnimation.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\SkeletonComponent.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\SkeletonDataAsset.cs" />
-     <Compile Include="Assets\spine-unity\Assets\examples\goblins\Goblins.cs" />
-     <Compile Include="Assets\spine-unity\Assets\examples\spineboy\Spineboy.cs" />
-     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.atlas.txt" />
-     <None Include="Assets\Runner-penguin\penguin.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.json.txt" />
-     <None Include="Assets\Runner-penguin\penguin.json.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.json.txt" />
-     <None Include="Assets\spine-unity\Assets\Spine\Shaders\Skeleton.shader" />
-     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.json.txt" />
-     <None Include="Assets\spine-unity\Assets\Spine\Shaders\SkeletonLit.shader" />
+     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+     <None Include="Assets\Plugins\Sphero\License.txt" />
+ <Reference Include="Assets\Plugins\Sphero\JsonFx.Json">
+ <HintPath>Assets\Plugins\Sphero\JsonFx.Json.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{ADE02645-13D5-3CDA-EA05-18FE4F1E537D}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
       <Project>{E599603F-A1EF-52FA-DCD5-D34147818FAC}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
   </ItemGroup>

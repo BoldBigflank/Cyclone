@@ -10,7 +10,6 @@ public class GameController : MonoBehaviour {
 	string playButtonText = "Play";
 	GameObject player;
 	GameObject camera;
-	float playTime;
 	public static float score = 0.0F;
 
 
@@ -31,7 +30,11 @@ public class GameController : MonoBehaviour {
 	List<Color> colors;
 	int colorIndex;
 	float tColor;
-	Light mainLight;
+	Light cameraLight;
+
+	// Sphero
+	Sphero sphero;
+	SpheroDeviceNotification Message;
 
 	void StartGame(){
 		// Reset if starting a new game
@@ -47,7 +50,6 @@ public class GameController : MonoBehaviour {
 		}
 
 		score = 0.0F;
-		playTime = 0.0F;
 		drawnPosition = 0.0F;
 
 		player.SendMessage("Reset");
@@ -56,6 +58,12 @@ public class GameController : MonoBehaviour {
 		playButtonText = "Play Again";
 
 		gameIsRunning = true;
+		if(sphero != null){
+			sphero.EnableControllerStreaming(20, 1,
+				SpheroDataStreamingMask.AccelerometerFilteredAll |
+				SpheroDataStreamingMask.QuaternionAll |
+				SpheroDataStreamingMask.IMUAnglesFilteredAll);
+		}
 	}
 
 	// Use this for initialization
@@ -69,8 +77,7 @@ public class GameController : MonoBehaviour {
 
 		segments = new List<Rigidbody>();
 
-		GameObject main = GameObject.FindGameObjectWithTag("MainCamera");
-		mainLight = main.GetComponent<Light>();
+		cameraLight = camera.GetComponent<Light>();
 		colors = new List<Color>();
 		colors.Add(Color.red);
 		colors.Add(Color.yellow);
@@ -81,7 +88,11 @@ public class GameController : MonoBehaviour {
 
 		colorIndex = 0;
 
-//		segments = new List<Rigidbody>();
+		// Sphero
+		Sphero[] ConnectedSpheros = SpheroProvider.GetSharedProvider().GetConnectedSpheros();
+		if(ConnectedSpheros.Length > 0) sphero = ConnectedSpheros[0];
+		else sphero = null;
+		SpheroDeviceMessenger.SharedInstance.NotificationReceived += ReceiveNotificationMessage;
 	}
 
 	void UpdateScoreBy(float i){
@@ -100,10 +111,13 @@ public class GameController : MonoBehaviour {
 			tColor += Time.deltaTime / colorDuration; // advance timer at the right speed
 //			light.color = Color.Lerp(selection, endColor, tColor);
 			Color newColor = Color.Lerp(colors[colorIndex%colors.Count], colors[(colorIndex+1)%colors.Count], tColor);
-			mainLight.color = newColor;
+			cameraLight.color = newColor;
 			foreach (Rigidbody segment in segments){
 				segment.renderer.material.SetColor ("_Color", newColor);
 			}
+
+			// Sphero light color
+			if(sphero != null) sphero.SetRGBLED(newColor.r, newColor.g, newColor.b);  
 		}
 		if(gameIsRunning){
 			score += Time.deltaTime;
@@ -145,13 +159,26 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-
+		// Sphero message handling
+		if (Message != null) {
+			//TODO handle message here
+			Debug.Log("We got a message: "+ Message);
+			Message = null;
+		}
 	}
-
+	
 	void GameOver(){
 		gameIsRunning = false;
+		SpheroDeviceMessenger.SharedInstance.NotificationReceived -= ReceiveNotificationMessage;
+		if(sphero != null) sphero.DisableControllerStreaming();
 	}
 
+	// SPHERO HANDLING
+	private void ReceiveNotificationMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
+	{
+		Message = (SpheroDeviceNotification)eventArgs.Message;
+	}
+	
 	void OnGUI(){
 		GUI.skin.button.font = gameFont;
 		GUI.skin.label.font = gameFont;
@@ -168,6 +195,12 @@ public class GameController : MonoBehaviour {
 		} else {
 			GUI.skin.label.alignment = TextAnchor.LowerLeft;
 			GUI.Label(new Rect(Screen.width/2, Screen.height * 0.9F, 200, 50), "Score: " + score.ToString("F2"));
+		}
+	}
+
+	void OnApplicationPause(bool pause) {
+		if( pause ) {
+			SpheroProvider.GetSharedProvider().DisconnectSpheros();
 		}
 	}
 }

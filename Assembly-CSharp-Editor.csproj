@@ -46,21 +46,9 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\spine-unity\Assets\Spine\Editor\AtlasAssetInspector.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\Editor\Menus.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\Editor\SkeletonAnimationInspector.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\Editor\SkeletonComponentInspector.cs" />
-     <Compile Include="Assets\spine-unity\Assets\Spine\Editor\SkeletonDataAssetInspector.cs" />
-     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.atlas.txt" />
-     <None Include="Assets\Runner-penguin\penguin.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.json.txt" />
-     <None Include="Assets\Runner-penguin\penguin.json.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.json.txt" />
-     <None Include="Assets\spine-unity\Assets\Spine\Shaders\Skeleton.shader" />
-     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.json.txt" />
-     <None Include="Assets\spine-unity\Assets\Spine\Shaders\SkeletonLit.shader" />
+     <Compile Include="Assets\Editor\SetupXCode.cs" />
+     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+     <None Include="Assets\Plugins\Sphero\License.txt" />
  <Reference Include="\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEditor.Graphs">
  <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEditor.Graphs.dll</HintPath>
  </Reference>
@@ -73,8 +61,13 @@
  <Reference Include="\Applications\Unity\Unity.app\Contents\PlaybackEngines\AndroidPlayer\EditorExtensions\UnityEditor.Android.Extensions">
  <HintPath>\Applications\Unity\Unity.app\Contents\PlaybackEngines\AndroidPlayer\EditorExtensions\UnityEditor.Android.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="Assets\Plugins\Sphero\JsonFx.Json">
+ <HintPath>Assets\Plugins\Sphero\JsonFx.Json.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{ADE02645-13D5-3CDA-EA05-18FE4F1E537D}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
       <Project>{E599603F-A1EF-52FA-DCD5-D34147818FAC}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">

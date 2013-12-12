@@ -48,16 +48,11 @@
   <ItemGroup>
      <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\SmoothFollow.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\SmoothLookAtDistance.js" />
-     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.atlas.txt" />
-     <None Include="Assets\Runner-penguin\penguin.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.json.txt" />
-     <None Include="Assets\Runner-penguin\penguin.json.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.json.txt" />
-     <None Include="Assets\spine-unity\Assets\Spine\Shaders\Skeleton.shader" />
-     <None Include="Assets\spine-unity\Assets\examples\spineboy\data\spineboy.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\dragon\data\dragon.atlas.txt" />
-     <None Include="Assets\spine-unity\Assets\examples\goblins\data\goblins.json.txt" />
-     <None Include="Assets\spine-unity\Assets\Spine\Shaders\SkeletonLit.shader" />
+     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+     <None Include="Assets\Plugins\Sphero\License.txt" />
+ <Reference Include="Assets\Plugins\Sphero\JsonFx.Json">
+ <HintPath>Assets\Plugins\Sphero\JsonFx.Json.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
