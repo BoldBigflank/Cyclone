@@ -31,11 +31,13 @@ public class MoveAround : MonoBehaviour {
 				Vector3 mousePos = Input.mousePosition;
 				if(mousePos.x < Screen.width/2) rotateDirection = -1;
 				if(mousePos.x >= Screen.width/2) rotateDirection = 1;
+				transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
+			} else {
+				// Rotate the sphere around the middle axis with <-/-> and A/D
+				transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed * Time.deltaTime); // Arrow keys
 			}
 			
-			// Rotate the sphere around the middle axis with <-/-> and A/D
-			//		transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed); // Arrow keys
-			transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
+
 			
 			// Move the sphere forward with ^/v for now
 			
