@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour {
 	bool gameIsRunning;
 	string playButtonText = "Play";
 	GameObject player;
-	GameObject camera;
+	GameObject mainCamera;
 	public static float score = 0.0F;
 
 
@@ -33,10 +33,25 @@ public class GameController : MonoBehaviour {
 	Light cameraLight;
 
 	// Sphero
+	bool streaming = false;
+
+	private SpheroAccelerometerData.Acceleration acceleration = new SpheroAccelerometerData.Acceleration();
+
+	private float pitch = 0.0f;
+	private float roll = 0.0f;
+	private float yaw = 0.0f;
+
+	private float q0 = 1.0f;
+	private float q1 = 1.0f;
+	private float q2 = 1.0f;
+	private float q3 = 1.0f;
+
 	Sphero sphero;
 	SpheroDeviceNotification Message;
 
 	void StartGame(){
+		player.SendMessage("Reset");
+
 		// Reset if starting a new game
 		GameObject[] segmentsToDelete = GameObject.FindGameObjectsWithTag("LevelSegment");
 		foreach(GameObject s in segmentsToDelete){
@@ -52,32 +67,35 @@ public class GameController : MonoBehaviour {
 		score = 0.0F;
 		drawnPosition = 0.0F;
 
-		player.SendMessage("Reset");
 
 		// Change button text if starting over
 		playButtonText = "Play Again";
 
 		gameIsRunning = true;
 		if(sphero != null){
-			sphero.EnableControllerStreaming(20, 1,
+			sphero.EnableControllerStreaming(60, 1,
 				SpheroDataStreamingMask.AccelerometerFilteredAll |
 				SpheroDataStreamingMask.QuaternionAll |
 				SpheroDataStreamingMask.IMUAnglesFilteredAll);
 		}
 	}
 
+	void Awake() {
+		Application.targetFrameRate = 60;
+	}
+	
 	// Use this for initialization
 	void Start () {
 		gameIsRunning = false;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
-		camera = GameObject.FindGameObjectWithTag("MainCamera");
+		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 		tColor = 0.0F;
 
 		segments = new List<Rigidbody>();
 
-		cameraLight = camera.GetComponent<Light>();
+		cameraLight = mainCamera.GetComponent<Light>();
 		colors = new List<Color>();
 		colors.Add(Color.red);
 		colors.Add(Color.yellow);
@@ -159,11 +177,36 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		// Sphero message handling
-		if (Message != null) {
-			//TODO handle message here
-			Debug.Log("We got a message: "+ Message);
-			Message = null;
+		// Sphero streaming
+		if (!streaming && 
+		    SpheroProvider.GetSharedProvider().GetConnectedSpheros().Length  > 0) 
+		{
+			// Setup streaming for the first time once a Sphero is connected.
+			//// Register the event handler call back with the SpheroDeviceMessenger
+			SpheroDeviceMessenger.SharedInstance.AsyncDataReceived += ReceiveAsyncMessage;        
+			//// Get the currently connected Sphero
+			Sphero[] spheros =
+				SpheroProvider.GetSharedProvider().GetConnectedSpheros();
+			sphero = spheros[0];
+			//// Enable data streaming for controller app. This method turns off stabilization (disables the wheel motors), 
+			//// turn on the back LED (negative x axis reference), and sets data streaming at 20 samples/sec (400/20), 
+			//// a single sample per packet sent, and turns on accelerometer, quaternion, and IMU (attitude) sampling.
+			sphero.EnableControllerStreaming(60, 1,
+                   SpheroDataStreamingMask.AccelerometerFilteredAll |
+                   SpheroDataStreamingMask.QuaternionAll |
+                   SpheroDataStreamingMask.IMUAnglesFilteredAll);
+			
+			streaming = true;
+		}  
+		if(Message != null){
+			
+			Sphero notifiedSphero = SpheroProvider.GetSharedProvider().GetSphero(Message.RobotID);
+			if( Message.NotificationType == SpheroDeviceNotification.SpheroNotificationType.DISCONNECTED ) {
+				notifiedSphero.ConnectionState = Sphero.Connection_State.Disconnected;
+				streaming = false;
+				Application.LoadLevel("NoSpheroConnectedScene");
+			}
+
 		}
 	}
 	
@@ -173,12 +216,6 @@ public class GameController : MonoBehaviour {
 		if(sphero != null) sphero.DisableControllerStreaming();
 	}
 
-	// SPHERO HANDLING
-	private void ReceiveNotificationMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
-	{
-		Message = (SpheroDeviceNotification)eventArgs.Message;
-	}
-	
 	void OnGUI(){
 		GUI.skin.button.font = gameFont;
 		GUI.skin.label.font = gameFont;
@@ -199,8 +236,57 @@ public class GameController : MonoBehaviour {
 	}
 
 	void OnApplicationPause(bool pause) {
-		if( pause ) {
+		if (pause) {
+			// Unregister event handlers when the applications pauses.
+			if (streaming) {
+				// removes data streaming event handler
+				SpheroDeviceMessenger.SharedInstance.AsyncDataReceived -= ReceiveAsyncMessage;        
+				// Turns off controller mode data streaming. Stabilization is restored and the back LED is turn off.
+				sphero.DisableControllerStreaming();
+				streaming = false;
+			} 
+			// Stop listening for disconnnect notifications.
+			SpheroDeviceMessenger.SharedInstance.NotificationReceived -= 
+				ReceiveNotificationMessage;
+			// Disconnect from the Sphero
 			SpheroProvider.GetSharedProvider().DisconnectSpheros();
+		}else {
+			SpheroDeviceMessenger.SharedInstance.NotificationReceived += ReceiveNotificationMessage;
+			streaming = false;
 		}
+	}
+	
+	/*
+         * Callback to receive connection notifications 
+         */
+	private void ReceiveNotificationMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
+	{
+		// Event handler that listens for disconnects. An example of when one would be received is when Sphero 
+		// goes to sleep.
+		Message = (SpheroDeviceNotification)eventArgs.Message;
+
+	}
+	
+	private void ReceiveAsyncMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
+	{
+		// Handler method for the streaming data. This code copies the data values
+		// to instance variables, which are updated on the screen in the OnGUI method.
+		SpheroDeviceSensorsAsyncData message = (SpheroDeviceSensorsAsyncData)eventArgs.Message;
+		SpheroDeviceSensorsData sensorsData = message.Frames[0];
+		
+		acceleration = sensorsData.AccelerometerData.Normalized;
+		
+		pitch = sensorsData.AttitudeData.Pitch;
+		roll = sensorsData.AttitudeData.Roll;
+		yaw = sensorsData.AttitudeData.Yaw;
+		if(gameIsRunning){
+			player.transform.position = new Vector3(0.0F, -4.5F, player.transform.position.z);
+			player.transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
+		}
+
+		q0 = sensorsData.QuaternionData.Q0;
+		q1 = sensorsData.QuaternionData.Q1;
+		q2 = sensorsData.QuaternionData.Q2;
+		q3 = sensorsData.QuaternionData.Q3; 
 	}
 }

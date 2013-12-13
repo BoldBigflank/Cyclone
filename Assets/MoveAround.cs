@@ -12,6 +12,8 @@ public class MoveAround : MonoBehaviour {
 	float speed = 180.0F;
 	float forwardSpeed = 30.0F;
 	public static float score = 0.0F;
+	public float startX = 0.0F;
+	public float startY = -4.5F;
 
 	// Use this for initialization
 	void Start () {
@@ -35,27 +37,20 @@ public class MoveAround : MonoBehaviour {
 			} else {
 				// Rotate the sphere around the middle axis with <-/-> and A/D
 				transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed * Time.deltaTime); // Arrow keys
+
 			}
-			
 
-			
-			// Move the sphere forward with ^/v for now
-			
-			float curSpeed = forwardSpeed * Input.GetAxis("Vertical");
-			
 			controller.Move(Vector3.forward * forwardSpeed * Time.deltaTime ); // Auto
-			//		controller.Move(Vector3.forward * curSpeed * Time.deltaTime ); // Manual forward movement
+
+			//		float curSpeed = forwardSpeed * Input.GetAxis("Vertical"); // Manual forward movement
+			//		controller.Move(Vector3.forward * curSpeed * Time.deltaTime ); 
 		}
-
-
-
-
 
 	}
 
 	void Reset(){
 		Debug.Log ("MoveAround - Reset");
-		transform.position = new Vector3(0.0F, -4.5F, 10.0F);
+		transform.position = new Vector3(startX, startY, 10.0F);
 		forwardSpeed = startingSpeed;
 		gameIsRunning = true;
 	}
@@ -65,10 +60,6 @@ public class MoveAround : MonoBehaviour {
 		gameIsRunning = false;
 	}
 
-	int GetScore(){
-		return 666;
-	}
-
 	void OnTriggerEnter(Collider obj) {
 		if(obj.tag == "Obstacle"){
 			Debug.Log("Collided"+ obj.tag + "(" + obj.transform.position.x + ", " + obj.transform.position.y + ", " + obj.transform.position.z + ")");
@@ -76,34 +67,7 @@ public class MoveAround : MonoBehaviour {
 			GameOver();
 			gameController.SendMessage ("GameOver");
 		}
-		//	if (obj.gameObject.name == "Shark") {
-		//		//reset shark
-		//		obj.gameObject.transform.rotation = Quaternion.identity;
-		//		obj.gameObject.transform.position = new Vector3(20f, -3f, 8f);
-		//		Destroy(this.gameObject);
-		//	}
-	}
-
-	void OnGUI(){
 
 	}
 
 }
-
-
-
-/*
- * var speed : float = 3.0;
- * var rotateSpeed : float = 3.0;
- * function Update () {
- *     var controller : CharacterController = GetComponent(CharacterController);
- *     // Rotate around y - axis
- *     transform.Rotate(0, Input.GetAxis ("Horizontal") * rotateSpeed, 0);
- * 
- *     // Move forward / backward
- *     var forward : Vector3 = transform.TransformDirection(Vector3.forward);
- *     var curSpeed : float = speed * Input.GetAxis ("Vertical");
- *     controller.SimpleMove(forward * curSpeed);
- * }
- * @script RequireComponent(CharacterController)
- */

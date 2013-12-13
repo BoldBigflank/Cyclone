@@ -100,7 +100,7 @@ public class NoSpheroConnectedView : MonoBehaviour {
 			Application.OpenURL(m_GetASpheroURL);
 		}
 
-		if(GUI.Button (new Rect(200, getASpheroButtonY, buttonWidth, buttonHeight), "Continue without Sphero") ) {
+		if(GUI.Button (new Rect(backgroundX + (backgroundWidth*0.178f), getASpheroButtonY, buttonWidth, buttonHeight), "Continue without Sphero") ) {
 			Application.LoadLevel (m_NextLevel);
 		}
 		

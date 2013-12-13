@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CameraPulse.cs" />
      <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\MoveAround.cs" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
