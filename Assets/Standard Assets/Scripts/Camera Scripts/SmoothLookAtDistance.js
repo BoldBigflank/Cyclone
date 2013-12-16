@@ -3,11 +3,9 @@ var damping = 6.0;
 var smooth = true;
 // The distance in the x-z plane to the target
 var distance = 10.0;
-var radius = .75;
-var period = 8;
 
-var bigR = 1.0F;
-var r = 1.5F;
+var bigR = 0.75F;
+var r = 1.0F;
 private var t : float;
 
 @script AddComponentMenu("Camera-Control/Smooth Look At")
@@ -17,7 +15,8 @@ function LateUpdate () {
 		if (smooth)
 		{
 			// Look at and dampen the rotation
-			var rotation = Quaternion.LookRotation(target.position - transform.position);
+			var lookPosition = Vector3(target.position.x * .75, target.position.y * .75, target.position.z);
+			var rotation = Quaternion.LookRotation(lookPosition - transform.position);
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * damping);
 		}
 		else

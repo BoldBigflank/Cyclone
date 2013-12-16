@@ -1,16 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CameraPulse.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/MoveAround.cs">
     <Files>
-      <File FileName="Assets/CameraPulse.cs" Line="15" Column="3" />
-      <File FileName="Assets/GameController.cs" Line="143" Column="4" />
-      <File FileName="Assets/CameraPulse.cs" Line="27" Column="31" />
+      <File FileName="Assets/CameraPulse.cs" Line="63" Column="21" />
+      <File FileName="Assets/GameController.cs" Line="175" Column="6" />
+      <File FileName="Assets/Standard Assets/Scripts/Camera Scripts/SmoothLookAtDistance.js" Line="30" Column="47" />
+      <File FileName="Assets/MoveAround.cs" Line="77" Column="3" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
-            <Node name="CameraPulse.cs" selected="True" />
+            <Node name="MoveAround.cs" selected="True" />
           </Node>
           <Node name="Assembly-UnityScript-firstpass" expanded="True">
             <Node name="Standard Assets" expanded="True">

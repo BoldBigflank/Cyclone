@@ -150,8 +150,14 @@ public class GameController : MonoBehaviour {
 				
 				// Add an obstacle
 				int angle = Random.Range (0, 8)  * 45;
-				Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacles[0], new Vector3(-5.0F, -5.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
+				Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacles[0], new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
 				instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, angle);
+
+				// 33% chance of adding another next to it
+				if(Random.Range ( 0, 3 ) == 1){
+					Rigidbody instantiatedObstacle2 = (Rigidbody) Instantiate(obstacles[0], new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
+					instantiatedObstacle2.transform.RotateAround(Vector3.zero, Vector3.forward, angle + 45 + 45 * Random.Range(1,6));
+				}
 
 				// Change the lamp's color
 				if(tColor >= 1.0F) SetColor(); // Start the new color
@@ -280,8 +286,10 @@ public class GameController : MonoBehaviour {
 		roll = sensorsData.AttitudeData.Roll;
 		yaw = sensorsData.AttitudeData.Yaw;
 		if(gameIsRunning){
-			player.transform.position = new Vector3(0.0F, -4.5F, player.transform.position.z);
-			player.transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
+			 player.GetComponent<MoveAround>().SetYaw(yaw);
+
+//			player.transform.position = new Vector3(0.0F, -4.5F, player.transform.position.z);
+//			player.transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
 		}
 
 		q0 = sensorsData.QuaternionData.Q0;
