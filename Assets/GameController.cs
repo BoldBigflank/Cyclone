@@ -17,12 +17,13 @@ public class GameController : MonoBehaviour {
 	public Rigidbody cylinder;
 	public Texture[] textures;
 
-	int maxSegments = 5;
+	int maxSegments = 7;
 	List<Rigidbody> segments;
 	float drawnPosition = 0.0F;
-	float drawDistance = 168.0F;
+	float drawDistance = 218.0F;
 	Transform target;
 
+	public Rigidbody obstacle;
 	public List<Rigidbody> obstacles;
 
 	// Color stuff
@@ -61,6 +62,7 @@ public class GameController : MonoBehaviour {
 
 		GameObject[] obstaclesToDelete = GameObject.FindGameObjectsWithTag("Obstacle");
 		foreach(GameObject o in obstaclesToDelete){
+			obstacles.Remove (o.rigidbody);
 			Destroy (o);
 		}
 
@@ -150,13 +152,15 @@ public class GameController : MonoBehaviour {
 				
 				// Add an obstacle
 				int angle = Random.Range (0, 8)  * 45;
-				Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacles[0], new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
+				Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
 				instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, angle);
+				obstacles.Add(instantiatedObstacle);
 
 				// 33% chance of adding another next to it
 				if(Random.Range ( 0, 3 ) == 1){
-					Rigidbody instantiatedObstacle2 = (Rigidbody) Instantiate(obstacles[0], new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
+					Rigidbody instantiatedObstacle2 = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
 					instantiatedObstacle2.transform.RotateAround(Vector3.zero, Vector3.forward, angle + 45 + 45 * Random.Range(1,6));
+					obstacles.Add (instantiatedObstacle2);
 				}
 
 				// Change the lamp's color
@@ -179,6 +183,21 @@ public class GameController : MonoBehaviour {
 					
 					Destroy ( segmentToDestroy.gameObject);
 					
+				}
+
+				if(obstacles.Count > 0 ){
+
+					List<Rigidbody> obstaclesToRemove = new List<Rigidbody>();
+					foreach(Rigidbody obstacle in obstacles){
+						if(obstacle.gameObject.transform.position.z < mainCamera.transform.position.z) { 
+							obstaclesToRemove.Add (obstacle);
+						}
+					}
+					foreach (Rigidbody obstacle in obstaclesToRemove){
+						obstacles.Remove(obstacle);
+						Destroy (obstacle.gameObject);
+					}
+
 				}
 			}
 		}

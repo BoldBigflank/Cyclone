@@ -35,11 +35,12 @@ public class MoveAround : MonoBehaviour {
 		if(gameIsRunning) {
 			forwardSpeed += Time.deltaTime;
 			int rotateDirection = 0;
-
-			if( Input.GetMouseButton(0) ){
-				Vector3 mousePos = Input.mousePosition;
-				if(mousePos.x < Screen.width/2) rotateDirection = -1;
-				if(mousePos.x >= Screen.width/2) rotateDirection = 1;
+			if( Input.touchCount > 0 ){ // Touch control
+				Debug.Log ("Touched" + Input.touches[Input.touchCount-1]);
+				Touch lastTouch = Input.touches[Input.touchCount-1];
+				Vector2 touchPos = lastTouch.position;
+				if(touchPos.x < Screen.width/2) rotateDirection = -1;
+				else rotateDirection = 1;
 				transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
 			} else if ( controlByYaw ){
 				transform.position = new Vector3(0.0F, -4.5F, transform.position.z);
