@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\CameraPulse.cs" />
      <Compile Include="Assets\GameController.cs" />
+     <Compile Include="Assets\JSONObject.cs" />
      <Compile Include="Assets\MoveAround.cs" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
      <None Include="Assets\Plugins\Sphero\License.txt" />

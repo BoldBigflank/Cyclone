@@ -14,12 +14,15 @@ public class GameController : MonoBehaviour {
 
 
 	// World creation stats
+	public TextAsset levelsAsset;
 	public Rigidbody cylinder;
 	public Texture[] textures;
+	int distancePerSection = 425;
 
 	int maxSegments = 7;
 	List<Rigidbody> segments;
-	float drawnPosition = 0.0F;
+	float drawnLevelPosition = 0.0F;
+	float drawnPiecePosition = 0.0F;
 	float drawDistance = 218.0F;
 	Transform target;
 
@@ -29,6 +32,7 @@ public class GameController : MonoBehaviour {
 	// Color stuff
 	float colorDuration = 1.0F;
 	List<Color> colors;
+	Color currentColor;
 	int colorIndex;
 	float tColor;
 	Light cameraLight;
@@ -67,8 +71,9 @@ public class GameController : MonoBehaviour {
 		}
 
 		score = 0.0F;
-		drawnPosition = 0.0F;
-
+		drawnLevelPosition = 0.0F;
+		drawnPiecePosition = 80.0F;
+		SetColor(Color.white);
 
 		// Change button text if starting over
 		playButtonText = "Play Again";
@@ -88,6 +93,8 @@ public class GameController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+//		string encodedString = "{\"field1\": 0.5,\"field2\": \"sampletext\",\"field3\": [1,2,3]}";
+
 		gameIsRunning = false;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -121,6 +128,11 @@ public class GameController : MonoBehaviour {
 
 	void SetColor(){
 		colorIndex++;
+		SetColor (colors[colorIndex % colors.Count]);
+	}
+
+	void SetColor(Color c){
+		currentColor = c;
 		tColor = 0.0F;
 	}
 
@@ -129,11 +141,14 @@ public class GameController : MonoBehaviour {
 		// Updating the color
 		if (tColor < 1){ // if end color not reached yet...
 			tColor += Time.deltaTime / colorDuration; // advance timer at the right speed
-//			light.color = Color.Lerp(selection, endColor, tColor);
-			Color newColor = Color.Lerp(colors[colorIndex%colors.Count], colors[(colorIndex+1)%colors.Count], tColor);
+			Color endColor = (gameIsRunning) ? colors[(colorIndex+1)%colors.Count] : Color.black;
+			Color newColor = Color.Lerp(currentColor, endColor, tColor);
 			cameraLight.color = newColor;
 			foreach (Rigidbody segment in segments){
 				segment.renderer.material.SetColor ("_Color", newColor);
+			}
+			foreach (Rigidbody obstacle in obstacles){
+				obstacle.renderer.material.SetColor ("_Color", newColor);
 			}
 
 			// Sphero light color
@@ -142,32 +157,40 @@ public class GameController : MonoBehaviour {
 		if(gameIsRunning){
 			score += Time.deltaTime;
 			// Create the new cylinders if necessary
-			if(target.transform.position.z > drawnPosition - drawDistance){
+			if(target.transform.position.z > drawnLevelPosition - drawDistance){
 				
 				// Create the cylinder
-				Rigidbody instantiatedCylinder = (Rigidbody) Instantiate(cylinder, Vector3.forward * (drawnPosition + 25.0F), transform.rotation);
-				instantiatedCylinder.GetComponent<MeshRenderer>().material.mainTexture = textures[Random.Range(0,textures.Length) ];
+				Rigidbody instantiatedCylinder = (Rigidbody) Instantiate(cylinder, Vector3.forward * (drawnLevelPosition + 25.0F), transform.rotation);
+				instantiatedCylinder.renderer.material.mainTexture = textures[ (int)instantiatedCylinder.transform.position.z / distancePerSection % textures.Length ]; // Random.Range(0,textures.Length)
 				segments.Add (instantiatedCylinder);
-				drawnPosition += 50.0F;
-				
-				// Add an obstacle
-				int angle = Random.Range (0, 8)  * 45;
-				Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
-				instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, angle);
-				obstacles.Add(instantiatedObstacle);
-
-				// 33% chance of adding another next to it
-				if(Random.Range ( 0, 3 ) == 1){
-					Rigidbody instantiatedObstacle2 = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, drawnPosition ), Quaternion.Euler( 0.0F, 0.0F, 0.0F ));
-					instantiatedObstacle2.transform.RotateAround(Vector3.zero, Vector3.forward, angle + 45 + 45 * Random.Range(1,6));
-					obstacles.Add (instantiatedObstacle2);
-				}
+				drawnLevelPosition += 50.0F;
 
 				// Change the lamp's color
 				if(tColor >= 1.0F) SetColor(); // Start the new color
 				
 				
 				
+			}
+
+			if(target.transform.position.z > drawnPiecePosition - drawDistance) {
+				float basePosition = drawnPiecePosition;
+				// Add a pattern
+				int baseAngle = Random.Range (0, 8)  * 45;
+				int flip = (Random.Range(0, 2) == 1) ? 1: -1;
+				JSONObject j = new JSONObject(levelsAsset.ToString());
+				// Pick a pattern
+				JSONObject pattern = j.list[Random.Range(0, j.list.Count)];
+
+				foreach(JSONObject piece in pattern.GetField("pieces").list){
+					int angle = flip * (int)piece.GetField("angle").n;
+					int depth = (int)piece.GetField ("depth").n;
+					
+					Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, basePosition + depth ), Quaternion.Euler( 90.0F, 0.0F, 0.0F ));
+					instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, baseAngle + angle);
+					obstacles.Add(instantiatedObstacle);
+				}
+
+				drawnPiecePosition += pattern.GetField("depth").n;
 			}
 			
 			// Remove segments we've passed
@@ -230,6 +253,7 @@ public class GameController : MonoBehaviour {
 				notifiedSphero.ConnectionState = Sphero.Connection_State.Disconnected;
 				streaming = false;
 				Application.LoadLevel("NoSpheroConnectedScene");
+				player.GetComponent<MoveAround>().setControlByYaw(false);
 			}
 
 		}
@@ -239,6 +263,7 @@ public class GameController : MonoBehaviour {
 		gameIsRunning = false;
 		SpheroDeviceMessenger.SharedInstance.NotificationReceived -= ReceiveNotificationMessage;
 		if(sphero != null) sphero.DisableControllerStreaming();
+		SetColor(Color.white);
 	}
 
 	void OnGUI(){

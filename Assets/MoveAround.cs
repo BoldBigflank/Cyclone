@@ -41,20 +41,19 @@ public class MoveAround : MonoBehaviour {
 				Vector2 touchPos = lastTouch.position;
 				if(touchPos.x < Screen.width/2) rotateDirection = -1;
 				else rotateDirection = 1;
-				transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
-			} else if ( controlByYaw ){
-				transform.position = new Vector3(0.0F, -4.5F, transform.position.z);
-				transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
+				yaw += rotateDirection * speed * Time.deltaTime;
+//				transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
 			} else {
 				// Rotate the sphere around the middle axis with <-/-> and A/D
-				transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed * Time.deltaTime); // Arrow keys
+				yaw += Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+//				transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed * Time.deltaTime); // Arrow keys
 
 			}
+			transform.position = new Vector3(0.0F, -4.5F, transform.position.z + forwardSpeed * Time.deltaTime);
+			transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
 
-			controller.Move(Vector3.forward * forwardSpeed * Time.deltaTime ); // Auto
+//			controller.Move(Vector3.forward * forwardSpeed * Time.deltaTime ); // Auto
 
-			//		float curSpeed = forwardSpeed * Input.GetAxis("Vertical"); // Manual forward movement
-			//		controller.Move(Vector3.forward * curSpeed * Time.deltaTime ); 
 		}
 
 	}
@@ -62,6 +61,10 @@ public class MoveAround : MonoBehaviour {
 	public void SetYaw(float y){
 		controlByYaw = true;
 		yaw = y;
+	}
+
+	public void setControlByYaw(bool c){
+		controlByYaw = c;
 	}
 
 	void Reset(){
@@ -79,10 +82,8 @@ public class MoveAround : MonoBehaviour {
 	void FixedUpdate(){
 		Vector3 direction = transform.position - lastPosition;
 
-		Ray ray = new Ray(lastPosition, direction);
 		RaycastHit hit;
 		if(Physics.SphereCast (transform.position, GetComponent<SphereCollider>().radius, direction, out hit, direction.magnitude ))
-//		if (Physics.Raycast(transform.position, direction, out hit, direction.magnitude))
 		{
 			Debug.Log("Collided"+ "(" + hit.point.x + ", " + hit.point.y + ", " + hit.point.z + ")");
 			hit.collider.renderer.material.SetColor ("_Color", Color.black);

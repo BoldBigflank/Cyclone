@@ -1,15 +1,14 @@
 fileFormatVersion: 2
-guid: 2e64d473d94ff44feb2c06b14c18f40d
+guid: 6ac7aff51fdfb4ad49d832ac1aee9926
 ModelImporter:
   serializedVersion: 15
   fileIDToRecycleName:
-    100000: default
-    100002: //RootNode
-    400000: default
-    400002: //RootNode
-    2300000: default
-    3300000: default
-    4300000: default
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cylinder
+    7400000: Default Take
     9500000: //RootNode
   materials:
     importMaterials: 1

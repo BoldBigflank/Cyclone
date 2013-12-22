@@ -5,7 +5,7 @@ public class CameraPulse : MonoBehaviour {
 	private float[] samples = new float[128];
 	private float[] curValues = new float[8];
 
-	public float intensity = 15.0F;
+	public float intensity = 10.0F;
 	public float damping = 2.0F;
 
 	public Texture2D SampleImg;
