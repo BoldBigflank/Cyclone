@@ -160,7 +160,7 @@ public class GameController : MonoBehaviour {
 			if(target.transform.position.z > drawnLevelPosition - drawDistance){
 				
 				// Create the cylinder
-				Rigidbody instantiatedCylinder = (Rigidbody) Instantiate(cylinder, Vector3.forward * (drawnLevelPosition + 25.0F), transform.rotation);
+				Rigidbody instantiatedCylinder = (Rigidbody) Instantiate(cylinder, Vector3.forward * (drawnLevelPosition + 25.0F), Quaternion.Euler(0.0f, 0.0f, 12.0f) );
 				instantiatedCylinder.renderer.material.mainTexture = textures[ (int)instantiatedCylinder.transform.position.z / distancePerSection % textures.Length ]; // Random.Range(0,textures.Length)
 				segments.Add (instantiatedCylinder);
 				drawnLevelPosition += 50.0F;
@@ -253,7 +253,7 @@ public class GameController : MonoBehaviour {
 				notifiedSphero.ConnectionState = Sphero.Connection_State.Disconnected;
 				streaming = false;
 				Application.LoadLevel("NoSpheroConnectedScene");
-				player.GetComponent<MoveAround>().setControlByYaw(false);
+//				player.GetComponent<MoveAround>().setControlByYaw(false);
 			}
 
 		}

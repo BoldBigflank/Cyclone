@@ -97,12 +97,12 @@
 			{
 				"piece":"nub",
 				"angle":315,
-				"depth":30
+				"depth":20
 			},
 			{
 				"piece":"nub",
 				"angle":45,
-				"depth":30
+				"depth":20
 			},
 			{
 				"piece":"nub",
@@ -199,7 +199,7 @@
 			},
 			{
 				"piece":"nub",
-				"angle":215,
+				"angle":225,
 				"depth":0
 			},
 			{
