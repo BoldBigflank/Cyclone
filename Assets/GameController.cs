@@ -27,6 +27,8 @@ public class GameController : MonoBehaviour {
 	Transform target;
 
 	public Rigidbody obstacle;
+	public Rigidbody rotatingObstacle;
+
 	public List<Rigidbody> obstacles;
 
 	// Color stuff
@@ -181,11 +183,20 @@ public class GameController : MonoBehaviour {
 				// Pick a pattern
 				JSONObject pattern = j.list[Random.Range(0, j.list.Count)];
 
+				// Decide whether the pattern is going to be rotating
+				int rotating = Random.Range (0,2);
+
 				foreach(JSONObject piece in pattern.GetField("pieces").list){
 					int angle = flip * (int)piece.GetField("angle").n;
 					int depth = (int)piece.GetField ("depth").n;
-					
-					Rigidbody instantiatedObstacle = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, basePosition + depth ), Quaternion.Euler( 90.0F, 0.0F, 0.0F ));
+
+					Rigidbody instantiatedObstacle;
+					if(rotating == 1){
+						instantiatedObstacle = (Rigidbody) Instantiate(rotatingObstacle, new Vector3(0.0F, 0.0F, basePosition + depth ), Quaternion.Euler( 90.0F, 0.0F, 0.0F ));
+					} else {
+						instantiatedObstacle = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, basePosition + depth ), Quaternion.Euler( 90.0F, 0.0F, 0.0F ));
+					}
+
 					instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, baseAngle + angle);
 					obstacles.Add(instantiatedObstacle);
 				}
