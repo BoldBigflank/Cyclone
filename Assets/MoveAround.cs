@@ -9,13 +9,15 @@ public class MoveAround : MonoBehaviour {
 	// Character stats
 //	CharacterController controller;
 	GameObject gameController;
-	public float startingSpeed = 30.0F;
+	public float startingSpeed = 20.0F;
+	public AudioClip crashSound;
 	float speed = 270.0F;
 	float forwardSpeed = 30.0F;
 	public static float score = 0.0F;
 	public float startX = 0.0F;
 	public float startY = -4.575F;
 	Vector3 lastPosition;
+	float totalTime;
 
 	float yaw;
 
@@ -32,7 +34,8 @@ public class MoveAround : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(gameIsRunning) {
-			forwardSpeed += Time.deltaTime;
+			totalTime += Time.deltaTime;
+			forwardSpeed = startingSpeed + Mathf.Log (1.0F + 0.25F * totalTime)*20.0F;
 			int rotateDirection = 0;
 			if( Input.touchCount > 0 ){ // Touch control
 				Debug.Log ("Touched" + Input.touches[Input.touchCount-1]);
@@ -62,6 +65,7 @@ public class MoveAround : MonoBehaviour {
 			{
 				Debug.Log("Collided"+ "(" + hit.point.x + ", " + hit.point.y + ", " + hit.point.z + ")");
 //				transform.position = hit.point;
+				audio.PlayOneShot(crashSound);
 				GameOver();
 				gameController.SendMessage ("GameOver");
 			}
@@ -86,6 +90,7 @@ public class MoveAround : MonoBehaviour {
 		transform.position = new Vector3(startX, startY, 10.0F);
 		forwardSpeed = startingSpeed;
 		gameIsRunning = true;
+		totalTime = 0;
 	}
 
 	void GameOver(){

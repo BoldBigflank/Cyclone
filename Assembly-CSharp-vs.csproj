@@ -50,7 +50,9 @@
      <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\JSONObject.cs" />
      <Compile Include="Assets\MoveAround.cs" />
+     <Compile Include="Assets\PlayButtonScript.cs" />
      <Compile Include="Assets\RotatingObstacle.cs" />
+     <Compile Include="Assets\SocialExample.cs" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
      <None Include="Assets\Plugins\Sphero\License.txt" />
  <Reference Include="Library\ScriptAssemblies\Assembly-UnityScript-firstpass">

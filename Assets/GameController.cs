@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SocialPlatforms;
 
 public class GameController : MonoBehaviour {
 	// Game Variables
@@ -8,10 +9,17 @@ public class GameController : MonoBehaviour {
 
 	bool gameIsRunning;
 	string playButtonText = "Play";
+	string playerName = "";
 	GameObject player;
 	GameObject mainCamera;
+	GameObject playButton;
 	public static float score = 0.0F;
+	public AudioClip crashSound;
 
+	// Styles
+	public GUIStyle timeStyle;
+	public GUIStyle labelStyle;
+	public GUIStyle buttonStyle;
 
 	// World creation stats
 	public TextAsset levelsAsset;
@@ -39,6 +47,10 @@ public class GameController : MonoBehaviour {
 	float tColor;
 	Light cameraLight;
 
+	// Game over button hidden
+	float playButtonDelay = 1.0F;
+	float playButtonTime = 0.0F;
+
 	// Sphero
 	bool streaming = false;
 
@@ -58,6 +70,8 @@ public class GameController : MonoBehaviour {
 
 	void StartGame(){
 		player.SendMessage("Reset");
+		player.GetComponent<ParticleSystem>().Clear();
+		player.GetComponent<ParticleSystem>().Play();
 
 		// Reset if starting a new game
 		GameObject[] segmentsToDelete = GameObject.FindGameObjectsWithTag("LevelSegment");
@@ -78,6 +92,7 @@ public class GameController : MonoBehaviour {
 		SetColor(Color.white);
 
 		// Change button text if starting over
+		playButton.SetActive(false);
 		playButtonText = "Play Again";
 
 		gameIsRunning = true;
@@ -95,12 +110,12 @@ public class GameController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-//		string encodedString = "{\"field1\": 0.5,\"field2\": \"sampletext\",\"field3\": [1,2,3]}";
 
 		gameIsRunning = false;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+		playButton = GameObject.FindGameObjectWithTag("PlayButton");
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 		tColor = 0.0F;
 
@@ -117,12 +132,34 @@ public class GameController : MonoBehaviour {
 
 		colorIndex = 0;
 
+		// Style stuff
+		labelStyle.font = gameFont;
+		timeStyle.font = gameFont;
+		buttonStyle.font = gameFont;
+
+		labelStyle.fontSize = Screen.height/15;
+		timeStyle.fontSize = Screen.height/15;
+		buttonStyle.fontSize = Screen.height/15;
+
+
 		// Sphero
 		Sphero[] ConnectedSpheros = SpheroProvider.GetSharedProvider().GetConnectedSpheros();
 		if(ConnectedSpheros.Length > 0) sphero = ConnectedSpheros[0];
 		else sphero = null;
 		SpheroDeviceMessenger.SharedInstance.NotificationReceived += ReceiveNotificationMessage;
+
+		// Player Prefs
+		if(!PlayerPrefs.HasKey("name")){
+			PlayerPrefs.SetString("name", "Player");
+		}
+		if(!PlayerPrefs.HasKey ("sound")){
+			PlayerPrefs.SetInt ("sound", 1);
+		}
+
+		playerName = PlayerPrefs.GetString("name");
+
 	}
+
 
 	void UpdateScoreBy(float i){
 		score += i;
@@ -152,6 +189,9 @@ public class GameController : MonoBehaviour {
 			foreach (Rigidbody obstacle in obstacles){
 				obstacle.renderer.material.SetColor ("_Color", newColor);
 			}
+
+			// Particle system color
+			player.GetComponent<ParticleSystem>().startColor = newColor;
 
 			// Sphero light color
 			if(sphero != null) sphero.SetRGBLED(newColor.r, newColor.g, newColor.b);  
@@ -185,6 +225,7 @@ public class GameController : MonoBehaviour {
 
 				// Decide whether the pattern is going to be rotating
 				int rotating = Random.Range (0,2);
+				int direction = Random.Range(0,2); // 
 
 				foreach(JSONObject piece in pattern.GetField("pieces").list){
 					int angle = flip * (int)piece.GetField("angle").n;
@@ -193,10 +234,10 @@ public class GameController : MonoBehaviour {
 					Rigidbody instantiatedObstacle;
 					if(rotating == 1){
 						instantiatedObstacle = (Rigidbody) Instantiate(rotatingObstacle, new Vector3(0.0F, 0.0F, basePosition + depth ), Quaternion.Euler( 90.0F, 0.0F, 0.0F ));
+						if(direction == 0) instantiatedObstacle.GetComponent<RotatingObstacle>().direction = -1;
 					} else {
 						instantiatedObstacle = (Rigidbody) Instantiate(obstacle, new Vector3(0.0F, 0.0F, basePosition + depth ), Quaternion.Euler( 90.0F, 0.0F, 0.0F ));
 					}
-
 					instantiatedObstacle.transform.RotateAround(Vector3.zero, Vector3.forward, baseAngle + angle);
 					obstacles.Add(instantiatedObstacle);
 				}
@@ -233,6 +274,13 @@ public class GameController : MonoBehaviour {
 					}
 
 				}
+			}
+		}
+
+		if(playButtonTime > 0.0F){
+			playButtonTime -= Time.deltaTime;
+			if(playButtonTime <= 0.0F){
+				playButton.SetActive (true);
 			}
 		}
 
@@ -275,24 +323,48 @@ public class GameController : MonoBehaviour {
 		SpheroDeviceMessenger.SharedInstance.NotificationReceived -= ReceiveNotificationMessage;
 		if(sphero != null) sphero.DisableControllerStreaming();
 		SetColor(Color.white);
+		player.GetComponent<ParticleSystem>().Stop();
+		playButtonTime = playButtonDelay;
+
+		// Post the score to the database
+		ReportScore(score.ToString());
+		PlayerPrefs.SetString ("name", playerName);
+		PlayerPrefs.Save ();
+
+	}
+
+	private RaycastHit hit;
+	private Ray ray;//ray we create when we touch the screen
+
+	void FixedUpdate(){
+		if(Input.touchCount == 1) {
+			ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+			Debug.DrawLine(ray.origin,ray.direction * 10);
+			if (Input.touches[0].phase == TouchPhase.Ended){
+				if(Physics.Raycast (ray, out hit, 10.0F)){
+					Debug.Log(hit.transform.name);//Object you touched
+					if(hit.transform.tag == "PlayButton") StartGame ();
+				}
+			}
+		}
 	}
 
 	void OnGUI(){
-		GUI.skin.button.font = gameFont;
-		GUI.skin.label.font = gameFont;
 
-		if(!gameIsRunning){
-			if (GUI.Button(new Rect(10, 10, 150, 100), playButtonText)){
-				StartGame ();
-			}
+		if(!gameIsRunning && playButtonTime <= 0.0F){
+			playerName = GUI.TextField (new Rect(Screen.width/4, 0, Screen.width/2, Screen.height * 0.1F), playerName, 16, buttonStyle);
+//			if (GUI.Button(new Rect(Screen.width/4, 0, Screen.width/2, Screen.height/5), playerName, buttonStyle)){
+//
+//			}
 			if (score > 0){
-				GUI.skin.label.alignment = TextAnchor.LowerCenter;
-				GUI.Label(new Rect(Screen.width/2, Screen.height/2, 300, 100), "Your Score: " + score.ToString ("F2") + " seconds");
+				GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
+				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
 			}
 				
 		} else {
-			GUI.skin.label.alignment = TextAnchor.LowerLeft;
-			GUI.Label(new Rect(Screen.width/2, Screen.height * 0.9F, 200, 50), "Score: " + score.ToString("F2"));
+//			GUI.skin.label.alignment = TextAnchor.LowerCenter;
+			GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
+			GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
 		}
 	}
 
@@ -327,11 +399,11 @@ public class GameController : MonoBehaviour {
 		Message = (SpheroDeviceNotification)eventArgs.Message;
 
 	}
-	
+
 	private void ReceiveAsyncMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
 	{
 		// Handler method for the streaming data. This code copies the data values
-		// to instance variables, which are updated on the screen in the OnGUI method.
+		// to instance variables, which are updated on the screen in the On  method.
 		SpheroDeviceSensorsAsyncData message = (SpheroDeviceSensorsAsyncData)eventArgs.Message;
 		SpheroDeviceSensorsData sensorsData = message.Frames[0];
 		
@@ -351,5 +423,50 @@ public class GameController : MonoBehaviour {
 		q1 = sensorsData.QuaternionData.Q1;
 		q2 = sensorsData.QuaternionData.Q2;
 		q3 = sensorsData.QuaternionData.Q3; 
+	}
+
+	private void ReportScore(string s){
+		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
+		WWWForm form = new WWWForm();
+		string name = PlayerPrefs.GetString("name");
+		System.DateTime now = System.DateTime.Now;
+
+		form.AddField ("score",s);
+		form.AddField ("name",name);
+		form.AddField ("now", now.ToString());
+		form.AddField ("key",Md5Sum (name + score + now + "want some salt with that hash"));
+		WWW www = new WWW(url, form);
+		StartCoroutine(WaitForRequest(www));
+	}
+
+	public  string Md5Sum(string strToEncrypt)
+	{
+		System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
+		byte[] bytes = ue.GetBytes(strToEncrypt);
+		
+		// encrypt bytes
+		System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+		byte[] hashBytes = md5.ComputeHash(bytes);
+		
+		// Convert the encrypted bytes back to a string (base 16)
+		string hashString = "";
+		
+		for (int i = 0; i < hashBytes.Length; i++)
+		{
+			hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
+		}
+		
+		return hashString.PadLeft(32, '0');
+	}
+	
+	private IEnumerator WaitForRequest(WWW www){
+		yield return www;
+
+		if (www.error == null)
+		{
+			Debug.Log("WWW Ok!: " + www.data);
+		} else {
+			Debug.Log("WWW Error: "+ www.error);
+		}    
 	}
 }
