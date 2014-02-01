@@ -8,8 +8,13 @@ public class GameController : MonoBehaviour {
 	public Font gameFont;
 
 	bool gameIsRunning;
-	string playButtonText = "Play";
 	string playerName = "";
+	float playerBest = 0.0F;
+	string leaderboardString = "";
+	int leaderboardCount;
+	bool gameStarted = false;
+	public Vector2 scrollPosition = Vector2.zero;
+
 	GameObject player;
 	GameObject mainCamera;
 	GameObject playButton;
@@ -93,9 +98,9 @@ public class GameController : MonoBehaviour {
 
 		// Change button text if starting over
 		playButton.SetActive(false);
-		playButtonText = "Play Again";
 
 		gameIsRunning = true;
+		gameStarted = true;
 		if(sphero != null){
 			sphero.EnableControllerStreaming(60, 1,
 				SpheroDataStreamingMask.AccelerometerFilteredAll |
@@ -152,12 +157,16 @@ public class GameController : MonoBehaviour {
 		if(!PlayerPrefs.HasKey("name")){
 			PlayerPrefs.SetString("name", "Player");
 		}
+		if(!PlayerPrefs.HasKey("best")){
+			PlayerPrefs.SetFloat("best",0.0F);
+		} 
 		if(!PlayerPrefs.HasKey ("sound")){
 			PlayerPrefs.SetInt ("sound", 1);
 		}
 
 		playerName = PlayerPrefs.GetString("name");
-
+		playerBest = PlayerPrefs.GetFloat ("best");
+		GetLeaderboard();
 	}
 
 
@@ -277,6 +286,14 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
+		if(!gameIsRunning && Input.touchCount == 1){ // Scrolling the leaderboard
+			if (Input.touches[0].phase == TouchPhase.Moved)
+			{
+				// dragging
+				scrollPosition.y += Input.touches[0].deltaPosition.y;
+			}
+		}
+
 		if(playButtonTime > 0.0F){
 			playButtonTime -= Time.deltaTime;
 			if(playButtonTime <= 0.0F){
@@ -329,12 +346,19 @@ public class GameController : MonoBehaviour {
 		// Post the score to the database
 		ReportScore(score.ToString());
 		PlayerPrefs.SetString ("name", playerName);
-		PlayerPrefs.Save ();
 
+		// Update the best
+		if(score > playerBest){
+			PlayerPrefs.SetFloat ("best", score);
+			playerBest = score;
+		}
+
+		PlayerPrefs.Save ();
 	}
 
 	private RaycastHit hit;
 	private Ray ray;//ray we create when we touch the screen
+
 
 	void FixedUpdate(){
 		if(Input.touchCount == 1) {
@@ -349,19 +373,35 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	void OnGUI(){
 
-		if(!gameIsRunning && playButtonTime <= 0.0F){
+	void OnGUI(){
+		if(!gameIsRunning && playButtonTime <= 0.0F){  // Between rounds
 			playerName = GUI.TextField (new Rect(Screen.width/4, 0, Screen.width/2, Screen.height * 0.1F), playerName, 16, buttonStyle);
+			if(GUI.changed) {
+				playerName = playerName.ToLower();
+				PlayerPrefs.SetString("name", playerName);
+				ProcessLeaderboard();
+			}
 //			if (GUI.Button(new Rect(Screen.width/4, 0, Screen.width/2, Screen.height/5), playerName, buttonStyle)){
 //
 //			}
-			if (score > 0){
-				GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
-				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
-			}
+//			if (score > 0){
+//				GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
+//				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
+//			}
+
+			GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.10F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F2") + " s", buttonStyle);
+
+			// This stuff is only after the first death
+			if(gameStarted == true){
+				GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.40F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F2") + " s", buttonStyle);
 				
-		} else {
+				Rect leaderboardRect = new Rect(0,0,Screen.width*0.59F, (1+leaderboardCount) * timeStyle.lineHeight);
+				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.6F, Screen.height * 0.8F), scrollPosition, leaderboardRect, false, false);
+				GUI.Label (leaderboardRect,leaderboardString, timeStyle);
+				GUI.EndScrollView();
+			}
+		} else { // Gameplay
 //			GUI.skin.label.alignment = TextAnchor.LowerCenter;
 			GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
 			GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
@@ -425,18 +465,24 @@ public class GameController : MonoBehaviour {
 		q3 = sensorsData.QuaternionData.Q3; 
 	}
 
+	private void GetLeaderboard(){
+		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
+		WWW www = new WWW(url);
+		StartCoroutine(GetLeaderboardResponse(www));
+	}
+
 	private void ReportScore(string s){
 		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
 		WWWForm form = new WWWForm();
-		string name = PlayerPrefs.GetString("name");
+
 		System.DateTime now = System.DateTime.Now;
 
 		form.AddField ("score",s);
-		form.AddField ("name",name);
+		form.AddField ("name",playerName);
 		form.AddField ("now", now.ToString());
-		form.AddField ("key",Md5Sum (name + score + now + "want some salt with that hash"));
+		form.AddField ("key",Md5Sum (playerName + s + now + "want some salt with that hash"));
 		WWW www = new WWW(url, form);
-		StartCoroutine(WaitForRequest(www));
+		StartCoroutine(ReportResponse(www));
 	}
 
 	public  string Md5Sum(string strToEncrypt)
@@ -458,13 +504,45 @@ public class GameController : MonoBehaviour {
 		
 		return hashString.PadLeft(32, '0');
 	}
-	
-	private IEnumerator WaitForRequest(WWW www){
+
+	private IEnumerator GetLeaderboardResponse(WWW www){
+		yield return www;
+		
+		if (www.error == null)
+		{
+			Debug.Log("WWW Ok!: " + www.text);
+			// Push the leaderboard to the user prefs
+			PlayerPrefs.SetString("leaderboard",www.text);
+			ProcessLeaderboard();
+			Debug.Log(leaderboardString);
+		} else {
+			Debug.Log("WWW Error: "+ www.error);
+			if(PlayerPrefs.HasKey("leaderboard")) ProcessLeaderboard();
+		}    
+	}
+
+	private void ProcessLeaderboard(){
+		JSONObject j = new JSONObject(PlayerPrefs.GetString("leaderboard"));
+		leaderboardString = "<color=red>World Records</color>\n";
+		leaderboardCount = 1;
+		foreach(JSONObject position in j.list){
+			string name = position.GetField("name").ToString().ToLower().Replace("\"","");
+			string score = position.GetField("score").ToString().Replace("\"","");
+			if(name.ToLower () == playerName.ToLower ()) leaderboardString += "<color=lime>";
+			leaderboardString += leaderboardCount + " " + score + "\t" + name;
+			if(name.ToLower () == playerName.ToLower ()) leaderboardString += "</color>";
+			leaderboardString += "\n";
+			leaderboardCount++;
+		}
+	}
+
+	private IEnumerator ReportResponse(WWW www){
 		yield return www;
 
 		if (www.error == null)
 		{
-			Debug.Log("WWW Ok!: " + www.data);
+			Debug.Log("WWW Ok!: " + www.text);
+			GetLeaderboard();
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
 		}    
