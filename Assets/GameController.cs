@@ -55,24 +55,7 @@ public class GameController : MonoBehaviour {
 	// Game over button hidden
 	float playButtonDelay = 1.0F;
 	float playButtonTime = 0.0F;
-
-	// Sphero
-	bool streaming = false;
-
-	private SpheroAccelerometerData.Acceleration acceleration = new SpheroAccelerometerData.Acceleration();
-
-	private float pitch = 0.0f;
-	private float roll = 0.0f;
-	private float yaw = 0.0f;
-
-	private float q0 = 1.0f;
-	private float q1 = 1.0f;
-	private float q2 = 1.0f;
-	private float q3 = 1.0f;
-
-	Sphero sphero;
-	SpheroDeviceNotification Message;
-
+	
 	void StartGame(){
 		player.SendMessage("Reset");
 		player.GetComponent<ParticleSystem>().Clear();
@@ -101,12 +84,7 @@ public class GameController : MonoBehaviour {
 
 		gameIsRunning = true;
 		gameStarted = true;
-		if(sphero != null){
-			sphero.EnableControllerStreaming(60, 1,
-				SpheroDataStreamingMask.AccelerometerFilteredAll |
-				SpheroDataStreamingMask.QuaternionAll |
-				SpheroDataStreamingMask.IMUAnglesFilteredAll);
-		}
+
 	}
 
 	void Awake() {
@@ -145,13 +123,6 @@ public class GameController : MonoBehaviour {
 		labelStyle.fontSize = Screen.height/15;
 		timeStyle.fontSize = Screen.height/15;
 		buttonStyle.fontSize = Screen.height/15;
-
-
-		// Sphero
-		Sphero[] ConnectedSpheros = SpheroProvider.GetSharedProvider().GetConnectedSpheros();
-		if(ConnectedSpheros.Length > 0) sphero = ConnectedSpheros[0];
-		else sphero = null;
-		SpheroDeviceMessenger.SharedInstance.NotificationReceived += ReceiveNotificationMessage;
 
 		// Player Prefs
 		if(!PlayerPrefs.HasKey("name")){
@@ -202,8 +173,6 @@ public class GameController : MonoBehaviour {
 			// Particle system color
 			player.GetComponent<ParticleSystem>().startColor = newColor;
 
-			// Sphero light color
-			if(sphero != null) sphero.SetRGBLED(newColor.r, newColor.g, newColor.b);  
 		}
 		if(gameIsRunning){
 			score += Time.deltaTime;
@@ -290,7 +259,7 @@ public class GameController : MonoBehaviour {
 			if (Input.touches[0].phase == TouchPhase.Moved)
 			{
 				// dragging
-				scrollPosition.y += Input.touches[0].deltaPosition.y;
+				scrollPosition.y += Input.touches[0].deltaPosition.y * 16.0F;
 			}
 		}
 
@@ -301,44 +270,10 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		// Sphero streaming
-		if (!streaming && 
-		    SpheroProvider.GetSharedProvider().GetConnectedSpheros().Length  > 0) 
-		{
-			// Setup streaming for the first time once a Sphero is connected.
-			//// Register the event handler call back with the SpheroDeviceMessenger
-			SpheroDeviceMessenger.SharedInstance.AsyncDataReceived += ReceiveAsyncMessage;        
-			//// Get the currently connected Sphero
-			Sphero[] spheros =
-				SpheroProvider.GetSharedProvider().GetConnectedSpheros();
-			sphero = spheros[0];
-			//// Enable data streaming for controller app. This method turns off stabilization (disables the wheel motors), 
-			//// turn on the back LED (negative x axis reference), and sets data streaming at 20 samples/sec (400/20), 
-			//// a single sample per packet sent, and turns on accelerometer, quaternion, and IMU (attitude) sampling.
-			sphero.EnableControllerStreaming(60, 1,
-                   SpheroDataStreamingMask.AccelerometerFilteredAll |
-                   SpheroDataStreamingMask.QuaternionAll |
-                   SpheroDataStreamingMask.IMUAnglesFilteredAll);
-			
-			streaming = true;
-		}  
-		if(Message != null){
-			
-			Sphero notifiedSphero = SpheroProvider.GetSharedProvider().GetSphero(Message.RobotID);
-			if( Message.NotificationType == SpheroDeviceNotification.SpheroNotificationType.DISCONNECTED ) {
-				notifiedSphero.ConnectionState = Sphero.Connection_State.Disconnected;
-				streaming = false;
-				Application.LoadLevel("NoSpheroConnectedScene");
-//				player.GetComponent<MoveAround>().setControlByYaw(false);
-			}
-
-		}
 	}
 	
 	void GameOver(){
 		gameIsRunning = false;
-		SpheroDeviceMessenger.SharedInstance.NotificationReceived -= ReceiveNotificationMessage;
-		if(sphero != null) sphero.DisableControllerStreaming();
 		SetColor(Color.white);
 		player.GetComponent<ParticleSystem>().Stop();
 		playButtonTime = playButtonDelay;
@@ -396,8 +331,8 @@ public class GameController : MonoBehaviour {
 			if(gameStarted == true){
 				GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.40F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F2") + " s", buttonStyle);
 				
-				Rect leaderboardRect = new Rect(0,0,Screen.width*0.59F, (1+leaderboardCount) * timeStyle.lineHeight);
-				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.6F, Screen.height * 0.8F), scrollPosition, leaderboardRect, false, false);
+				Rect leaderboardRect = new Rect(0,0,Screen.width*0.45F, (1+leaderboardCount) * timeStyle.lineHeight);
+				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.5F, Screen.height * 0.6F), scrollPosition, leaderboardRect, false, false);
 				GUI.Label (leaderboardRect,leaderboardString, timeStyle);
 				GUI.EndScrollView();
 			}
@@ -406,64 +341,7 @@ public class GameController : MonoBehaviour {
 			GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
 			GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
 		}
-	}
-
-	void OnApplicationPause(bool pause) {
-		if (pause) {
-			// Unregister event handlers when the applications pauses.
-			if (streaming) {
-				// removes data streaming event handler
-				SpheroDeviceMessenger.SharedInstance.AsyncDataReceived -= ReceiveAsyncMessage;        
-				// Turns off controller mode data streaming. Stabilization is restored and the back LED is turn off.
-				sphero.DisableControllerStreaming();
-				streaming = false;
-			} 
-			// Stop listening for disconnnect notifications.
-			SpheroDeviceMessenger.SharedInstance.NotificationReceived -= 
-				ReceiveNotificationMessage;
-			// Disconnect from the Sphero
-			SpheroProvider.GetSharedProvider().DisconnectSpheros();
-		}else {
-			SpheroDeviceMessenger.SharedInstance.NotificationReceived += ReceiveNotificationMessage;
-			streaming = false;
-		}
-	}
-	
-	/*
-         * Callback to receive connection notifications 
-         */
-	private void ReceiveNotificationMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
-	{
-		// Event handler that listens for disconnects. An example of when one would be received is when Sphero 
-		// goes to sleep.
-		Message = (SpheroDeviceNotification)eventArgs.Message;
-
-	}
-
-	private void ReceiveAsyncMessage(object sender, SpheroDeviceMessenger.MessengerEventArgs eventArgs)
-	{
-		// Handler method for the streaming data. This code copies the data values
-		// to instance variables, which are updated on the screen in the On  method.
-		SpheroDeviceSensorsAsyncData message = (SpheroDeviceSensorsAsyncData)eventArgs.Message;
-		SpheroDeviceSensorsData sensorsData = message.Frames[0];
-		
-		acceleration = sensorsData.AccelerometerData.Normalized;
-		
-		pitch = sensorsData.AttitudeData.Pitch;
-		roll = sensorsData.AttitudeData.Roll;
-		yaw = sensorsData.AttitudeData.Yaw;
-		if(gameIsRunning){
-			 player.GetComponent<MoveAround>().SetYaw(yaw);
-
-//			player.transform.position = new Vector3(0.0F, -4.5F, player.transform.position.z);
-//			player.transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
-		}
-
-		q0 = sensorsData.QuaternionData.Q0;
-		q1 = sensorsData.QuaternionData.Q1;
-		q2 = sensorsData.QuaternionData.Q2;
-		q3 = sensorsData.QuaternionData.Q3; 
-	}
+	}	
 
 	private void GetLeaderboard(){
 		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
@@ -513,6 +391,7 @@ public class GameController : MonoBehaviour {
 			Debug.Log("WWW Ok!: " + www.text);
 			// Push the leaderboard to the user prefs
 			PlayerPrefs.SetString("leaderboard",www.text);
+			PlayerPrefs.Save ();
 			ProcessLeaderboard();
 			Debug.Log(leaderboardString);
 		} else {
