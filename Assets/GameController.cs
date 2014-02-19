@@ -7,9 +7,11 @@ public class GameController : MonoBehaviour {
 	// Game Variables
 	public Font gameFont;
 
-	bool gameIsRunning;
+	public static bool gameIsRunning;
+	public static bool dicePlusConnected;
 	string playerName = "";
 	float playerBest = 0.0F;
+	int reverseControls;
 	string leaderboardString = "";
 	int leaderboardCount;
 	bool gameStarted = false;
@@ -18,6 +20,7 @@ public class GameController : MonoBehaviour {
 	GameObject player;
 	GameObject mainCamera;
 	GameObject playButton;
+	GameObject dicePlusHandler;
 	public static float score = 0.0F;
 	public AudioClip crashSound;
 
@@ -25,6 +28,7 @@ public class GameController : MonoBehaviour {
 	public GUIStyle timeStyle;
 	public GUIStyle labelStyle;
 	public GUIStyle buttonStyle;
+	public GUIStyle infoStyle;
 
 	// World creation stats
 	public TextAsset levelsAsset;
@@ -48,6 +52,7 @@ public class GameController : MonoBehaviour {
 	float colorDuration = 1.0F;
 	List<Color> colors;
 	Color currentColor;
+	public static Color newColor;
 	int colorIndex;
 	float tColor;
 	Light cameraLight;
@@ -60,6 +65,8 @@ public class GameController : MonoBehaviour {
 		player.SendMessage("Reset");
 		player.GetComponent<ParticleSystem>().Clear();
 		player.GetComponent<ParticleSystem>().Play();
+
+		dicePlusHandler.SetActive(false);
 
 		// Reset if starting a new game
 		GameObject[] segmentsToDelete = GameObject.FindGameObjectsWithTag("LevelSegment");
@@ -95,11 +102,13 @@ public class GameController : MonoBehaviour {
 	void Start () {
 
 		gameIsRunning = false;
+		dicePlusConnected = false;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		playButton = GameObject.FindGameObjectWithTag("PlayButton");
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
+		dicePlusHandler = GameObject.FindGameObjectWithTag("DicePlusHandler");
 		tColor = 0.0F;
 
 		segments = new List<Rigidbody>();
@@ -120,9 +129,11 @@ public class GameController : MonoBehaviour {
 		timeStyle.font = gameFont;
 		buttonStyle.font = gameFont;
 
-		labelStyle.fontSize = Screen.height/15;
-		timeStyle.fontSize = Screen.height/15;
-		buttonStyle.fontSize = Screen.height/15;
+
+		labelStyle.fontSize = Mathf.Min( Screen.height, Screen.width)/15;
+		timeStyle.fontSize = Mathf.Min( Screen.height, Screen.width)/15;
+		buttonStyle.fontSize = Mathf.Min( Screen.height, Screen.width)/15;
+		infoStyle.fontSize = Mathf.Min( Screen.height, Screen.width)/25;
 
 		// Player Prefs
 		if(!PlayerPrefs.HasKey("name")){
@@ -134,9 +145,13 @@ public class GameController : MonoBehaviour {
 		if(!PlayerPrefs.HasKey ("sound")){
 			PlayerPrefs.SetInt ("sound", 1);
 		}
+		if(!PlayerPrefs.HasKey ("reverse")){
+			PlayerPrefs.SetInt ("reverse", 1);
+		}
 
 		playerName = PlayerPrefs.GetString("name");
 		playerBest = PlayerPrefs.GetFloat ("best");
+		reverseControls = PlayerPrefs.GetInt ("reverse");
 		GetLeaderboard();
 	}
 
@@ -157,11 +172,15 @@ public class GameController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		// Back button quits
+		if (Input.GetKeyDown(KeyCode.Escape)) 
+			Application.Quit(); 
+
 		// Updating the color
 		if (tColor < 1){ // if end color not reached yet...
 			tColor += Time.deltaTime / colorDuration; // advance timer at the right speed
 			Color endColor = (gameIsRunning) ? colors[(colorIndex+1)%colors.Count] : Color.black;
-			Color newColor = Color.Lerp(currentColor, endColor, tColor);
+			newColor = Color.Lerp(currentColor, endColor, tColor);
 			cameraLight.color = newColor;
 			foreach (Rigidbody segment in segments){
 				segment.renderer.material.SetColor ("_Color", newColor);
@@ -229,7 +248,6 @@ public class GameController : MonoBehaviour {
 				
 				//			GameObject[] LevelSegments = GameObject.FindGameObjectsWithTag("LevelSegment");
 				if(segments.Count > 0 ){
-					Debug.Log ("Time to delete", segments[0]);
 					Rigidbody segmentToDestroy = segments[0];
 					
 					segments.Remove(segmentToDestroy);
@@ -253,6 +271,18 @@ public class GameController : MonoBehaviour {
 
 				}
 			}
+
+			// Arrow button visibility
+			GameObject[] controlButtons = GameObject.FindGameObjectsWithTag("ControlButton");
+			foreach(GameObject o in controlButtons){
+				float visibility = (5.0F - score)/5.0F;
+				if (dicePlusConnected) visibility = 0.0F;
+//				obstacle.renderer.material.SetColor ("_Color", newColor);
+				Color c = o.renderer.material.color;
+				c.a = Mathf.Max(visibility, 0.0F);
+				o.renderer.material.SetColor("_Color", c);
+			}
+
 		}
 
 		if(!gameIsRunning && Input.touchCount == 1){ // Scrolling the leaderboard
@@ -277,6 +307,7 @@ public class GameController : MonoBehaviour {
 		SetColor(Color.white);
 		player.GetComponent<ParticleSystem>().Stop();
 		playButtonTime = playButtonDelay;
+//		dicePlusHandler.SetActive(true);
 
 		// Post the score to the database
 		ReportScore(score.ToString());
@@ -301,7 +332,6 @@ public class GameController : MonoBehaviour {
 			Debug.DrawLine(ray.origin,ray.direction * 10);
 			if (Input.touches[0].phase == TouchPhase.Ended){
 				if(Physics.Raycast (ray, out hit, 10.0F)){
-					Debug.Log(hit.transform.name);//Object you touched
 					if(hit.transform.tag == "PlayButton") StartGame ();
 				}
 			}
@@ -315,11 +345,17 @@ public class GameController : MonoBehaviour {
 			if(GUI.changed) {
 				playerName = playerName.ToLower();
 				PlayerPrefs.SetString("name", playerName);
-				ProcessLeaderboard();
+				ProcessLeaderboard("");
 			}
-//			if (GUI.Button(new Rect(Screen.width/4, 0, Screen.width/2, Screen.height/5), playerName, buttonStyle)){
-//
-//			}
+			string controlStyle = (reverseControls == 1) ? "Normal":"Reverse";
+			if (GUI.Button(new Rect(0, Screen.height*0.75F, Screen.width/4, Screen.height* 0.25F), "Control: " + controlStyle, buttonStyle)){
+				if(reverseControls == 1) reverseControls = -1;
+				else reverseControls = 1;
+				PlayerPrefs.SetInt("reverse",reverseControls);
+			}
+			if(dicePlusConnected){
+				GUI.Label(new Rect(Screen.width * 0.75F, Screen.height*0.75F, Screen.width*0.25F, Screen.height * 0.25F), "Hold the 6 toward you as you rotate to steer.", infoStyle);
+			}
 //			if (score > 0){
 //				GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
 //				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
@@ -388,25 +424,24 @@ public class GameController : MonoBehaviour {
 		
 		if (www.error == null)
 		{
-			Debug.Log("WWW Ok!: " + www.text);
+			Debug.Log("GET Ok!: " + www.text);
 			// Push the leaderboard to the user prefs
-			PlayerPrefs.SetString("leaderboard",www.text);
-			PlayerPrefs.Save ();
-			ProcessLeaderboard();
-			Debug.Log(leaderboardString);
+			PlayerPrefs.SetString("leaderboard", www.text);
+			ProcessLeaderboard(www.text);
 		} else {
-			Debug.Log("WWW Error: "+ www.error);
-			if(PlayerPrefs.HasKey("leaderboard")) ProcessLeaderboard();
+			Debug.Log("GET Error: "+ www.error);
+			if(PlayerPrefs.HasKey("leaderboard")) ProcessLeaderboard("");
 		}    
 	}
 
-	private void ProcessLeaderboard(){
-		JSONObject j = new JSONObject(PlayerPrefs.GetString("leaderboard"));
+	private void ProcessLeaderboard(string json){
+		if (json == "") json = PlayerPrefs.GetString("leaderboard");
+		JSONObject j = new JSONObject(json);
 		leaderboardString = "<color=red>World Records</color>\n";
 		leaderboardCount = 1;
 		foreach(JSONObject position in j.list){
 			string name = position.GetField("name").ToString().ToLower().Replace("\"","");
-			string score = position.GetField("score").ToString().Replace("\"","");
+			string score =  float.Parse( position.GetField("score").ToString().Replace("\"","")).ToString ("0.00");
 			if(name.ToLower () == playerName.ToLower ()) leaderboardString += "<color=lime>";
 			leaderboardString += leaderboardCount + " " + score + "\t" + name;
 			if(name.ToLower () == playerName.ToLower ()) leaderboardString += "</color>";
@@ -420,10 +455,10 @@ public class GameController : MonoBehaviour {
 
 		if (www.error == null)
 		{
-			Debug.Log("WWW Ok!: " + www.text);
+			Debug.Log("POST Ok!: " + www.text);
 			GetLeaderboard();
 		} else {
-			Debug.Log("WWW Error: "+ www.error);
+			Debug.Log("POST Error: "+ www.error);
 		}    
 	}
 }

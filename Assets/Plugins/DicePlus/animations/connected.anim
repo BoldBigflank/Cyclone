@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!74 &7400000
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: connected
+  serializedVersion: 3
+  m_Compressed: 0
+  m_RotationCurves: []
+  m_CompressedRotationCurves: []
+  m_PositionCurves: []
+  m_ScaleCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: {x: -.239999995, y: .150000006, z: .00999999978}
+        inSlope: {x: 0, y: 0, z: 1.91612911}
+        outSlope: {x: 0, y: 0, z: 1.91612911}
+        tangentMode: -559038737
+      - time: .383333325
+        value: {x: -.239999995, y: .150000006, z: .814834118}
+        inSlope: {x: 0, y: 0, z: 1.75562084}
+        outSlope: {x: 0, y: 0, z: 1.75562084}
+        tangentMode: -559038737
+      - time: .516666651
+        value: {x: -24.3047543, y: 16.5652866, z: 1}
+        inSlope: {x: -261.393066, y: 178.304001, z: .958064556}
+        outSlope: {x: -261.393066, y: 178.304001, z: .958064556}
+        tangentMode: 0
+      - time: .633333325
+        value: {x: -44, y: 30, z: 1.10151863}
+        inSlope: {x: 0, y: 0, z: .78436923}
+        outSlope: {x: 0, y: 0, z: .78436923}
+        tangentMode: -559038737
+      - time: .75
+        value: {x: -39, y: 24, z: 1.18351293}
+        inSlope: {x: 1.97410583, y: .438690186, z: .623361111}
+        outSlope: {x: 1.97410583, y: .438690186, z: .623361111}
+        tangentMode: -559038737
+      - time: .916666687
+        value: {x: -44, y: 30, z: 1.26971316}
+        inSlope: {x: 0, y: 0, z: .415358365}
+        outSlope: {x: 0, y: 0, z: .415358365}
+        tangentMode: -559038737
+      - time: 3
+        value: {x: -44, y: 30, z: 1}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: -559038737
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    path: Images/Connected
+  m_FloatCurves: []
+  m_SampleRate: 60
+  m_WrapMode: 0
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_EditorCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: .383333325
+        value: -.239999995
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - time: .633333325
+        value: -44
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - time: .75
+        value: -39
+        inSlope: 1.97410583
+        outSlope: 1.97410583
+        tangentMode: 0
+      - time: .916666687
+        value: -44
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - time: 3
+        value: -44
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: m_LocalScale.x
+    path: Images/Connected
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: .383333325
+        value: .150000006
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - time: .633333325
+        value: 30
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - time: .75
+        value: 24
+        inSlope: .438690186
+        outSlope: .438690186
+        tangentMode: 0
+      - time: .916666687
+        value: 30
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - time: 3
+        value: 30
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: m_LocalScale.y
+    path: Images/Connected
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: .00999999978
+        inSlope: 1.91612911
+        outSlope: 1.91612911
+        tangentMode: 10
+      - time: .516666651
+        value: 1
+        inSlope: .958064556
+        outSlope: .958064556
+        tangentMode: 10
+      - time: 3
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: m_LocalScale.z
+    path: Images/Connected
+    classID: 4
+    script: {fileID: 0}
+  m_EulerEditorCurves: []
+  m_Events:
+  - time: 3
+    functionName: animationFinished
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 601111
+    messageOptions: 0

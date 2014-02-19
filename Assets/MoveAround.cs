@@ -3,7 +3,6 @@ using System.Collections;
 
 public class MoveAround : MonoBehaviour {
 	// World Stat
-	bool gameIsRunning; // Duplicate
 	public LayerMask layerMask;
 
 	// Character stats
@@ -18,31 +17,37 @@ public class MoveAround : MonoBehaviour {
 	public float startY = -4.575F;
 	Vector3 lastPosition;
 	float totalTime;
+	float slerpTime;
 
 	float yaw;
+	int reverseControls;
 
 	// Use this for initialization
 	void Start () {
 		Input.simulateMouseWithTouches = true;
 		forwardSpeed = 0.0F;
-		gameIsRunning = false;
 //		controller = GetComponent<CharacterController>();
 		gameController = GameObject.FindGameObjectWithTag("GameController");
-//		controlByYaw = false;
+		if(!PlayerPrefs.HasKey ("reverse")){
+			PlayerPrefs.SetInt ("reverse", 1);
+		}
+		reverseControls = PlayerPrefs.GetInt("reverse");
+		slerpTime = 0.0F;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(gameIsRunning) {
+		if(GameController.gameIsRunning) {
 			totalTime += Time.deltaTime;
 			forwardSpeed = startingSpeed + Mathf.Log (1.0F + 0.25F * totalTime)*20.0F;
 			int rotateDirection = 0;
 			if( Input.touchCount > 0 ){ // Touch control
-				Debug.Log ("Touched" + Input.touches[Input.touchCount-1]);
 				Touch lastTouch = Input.touches[Input.touchCount-1];
 				Vector2 touchPos = lastTouch.position;
 				if(touchPos.x < Screen.width/2) rotateDirection = -1;
 				else rotateDirection = 1;
+
+				rotateDirection = rotateDirection * reverseControls; // Reverse controls
 				yaw += rotateDirection * speed * Time.deltaTime;
 //				transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
 			} else {
@@ -51,11 +56,25 @@ public class MoveAround : MonoBehaviour {
 //				transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed * Time.deltaTime); // Arrow keys
 
 			}
+
+			// Get the old position
+
 			transform.position = new Vector3(0.0F, -4.575F, transform.position.z + forwardSpeed * Time.deltaTime);
+			transform.localRotation = new Quaternion();
 			transform.RotateAround(Vector3.zero, Vector3.forward, yaw); 
 
-//			controller.Move(Vector3.forward * forwardSpeed * Time.deltaTime ); // Auto
+			// Slerp the new position
+			if(slerpTime > 0){
+				Vector3 center = (lastPosition + transform.position) * 0.5F;
+				center -= new Vector3(0,0,lastPosition.z);
+				Vector3 startRelCenter = lastPosition - center;
+				Vector3 endRelCenter = transform.position - center;
 
+				transform.position = Vector3.Slerp (startRelCenter, endRelCenter, (0.03F-slerpTime)/0.03F) ;
+				transform.position += center;
+				slerpTime -= Time.deltaTime;
+				if(slerpTime<0.0F) slerpTime = 0.0F;
+			}
 
 			// Check for collisions
 			Vector3 direction = transform.position - lastPosition;
@@ -63,7 +82,7 @@ public class MoveAround : MonoBehaviour {
 			RaycastHit hit;
 			if(Physics.SphereCast (lastPosition, GetComponent<SphereCollider>().radius, direction, out hit, direction.magnitude ))
 			{
-				Debug.Log("Collided"+ "(" + hit.point.x + ", " + hit.point.y + ", " + hit.point.z + ")");
+//				Debug.Log("Collided"+ "(" + hit.point.x + ", " + hit.point.y + ", " + hit.point.z + ")");
 //				transform.position = hit.point;
 				audio.PlayOneShot(crashSound);
 				GameOver();
@@ -77,6 +96,7 @@ public class MoveAround : MonoBehaviour {
 
 	public void SetYaw(float y){
 //		controlByYaw = true;
+		slerpTime = 0.03F;
 		yaw = y;
 	}
 
@@ -85,17 +105,17 @@ public class MoveAround : MonoBehaviour {
 	}
 
 	void Reset(){
-		Debug.Log ("MoveAround - Reset");
+//		Debug.Log ("MoveAround - Reset");
 		lastPosition = new Vector3(startX, startY, 10.0F);
 		transform.position = new Vector3(startX, startY, 10.0F);
 		forwardSpeed = startingSpeed;
-		gameIsRunning = true;
 		totalTime = 0;
+		reverseControls = PlayerPrefs.GetInt("reverse");
 	}
 
 	void GameOver(){
 		forwardSpeed = 0.0F;
-		gameIsRunning = false;
+		GameController.gameIsRunning = false;
 	}
 
 	void FixedUpdate(){
