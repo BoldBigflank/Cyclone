@@ -244,22 +244,22 @@
 			},
 			{
 				"piece":"nub",
-				"angle":45,
+				"angle":135,
 				"depth":120
 			},
 			{
 				"piece":"nub",
-				"angle":90,
+				"angle":180,
 				"depth":120
 			},
 			{
 				"piece":"nub",
-				"angle":225,
+				"angle":315,
 				"depth":120
 			},
 			{
 				"piece":"nub",
-				"angle":270,
+				"angle":0,
 				"depth":120
 			}
 
@@ -385,62 +385,168 @@
 			{
 				"piece":"nub",
 				"angle":0,
-				"depth":0
+				"depth":20
 			},
 			{
 				"piece":"nub",
 				"angle":45,
-				"depth":0
+				"depth":20
 			},
 			{
 				"piece":"nub",
 				"angle":90,
-				"depth":0
+				"depth":20
 			},
 			{
 				"piece":"nub",
 				"angle":135,
-				"depth":0
+				"depth":20
 			},
 			{
 				"piece":"nub",
 				"angle":180,
-				"depth":0
+				"depth":20
 			},
 			{
 				"piece":"nub",
 				"angle":225,
+				"depth":20
+			},
+			{
+				"piece":"nub",
+				"angle":0,
+				"depth":23
+			},
+			{
+				"piece":"nub",
+				"angle":45,
+				"depth":23
+			},
+			{
+				"piece":"nub",
+				"angle":90,
+				"depth":23
+			},
+			{
+				"piece":"nub",
+				"angle":135,
+				"depth":23
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":23
+			},
+			{
+				"piece":"nub",
+				"angle":225,
+				"depth":23
+			}
+		]
+	},
+	{
+		"name":"gauntlet",
+		"depth":120,
+		"pieces":[
+			{
+				"piece":"nub",
+				"angle":0,
 				"depth":0
 			},
 			{
 				"piece":"nub",
 				"angle":0,
-				"depth":3
+				"depth":10
 			},
 			{
 				"piece":"nub",
-				"angle":45,
-				"depth":3
+				"angle":0,
+				"depth":20
 			},
 			{
 				"piece":"nub",
-				"angle":90,
-				"depth":3
+				"angle":0,
+				"depth":30
 			},
 			{
 				"piece":"nub",
-				"angle":135,
-				"depth":3
+				"angle":0,
+				"depth":40
+			},
+			{
+				"piece":"nub",
+				"angle":0,
+				"depth":50
+			},
+			{
+				"piece":"nub",
+				"angle":0,
+				"depth":60
+			},
+			{
+				"piece":"nub",
+				"angle":0,
+				"depth":70
+			},
+			{
+				"piece":"nub",
+				"angle":0,
+				"depth":80
+			},
+			{
+				"piece":"nub",
+				"angle":0,
+				"depth":90
 			},
 			{
 				"piece":"nub",
 				"angle":180,
-				"depth":3
+				"depth":0
 			},
 			{
 				"piece":"nub",
-				"angle":225,
-				"depth":3
+				"angle":180,
+				"depth":10
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":20
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":30
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":40
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":50
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":60
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":70
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":80
+			},
+			{
+				"piece":"nub",
+				"angle":180,
+				"depth":90
 			}
 		]
 	}

@@ -6,11 +6,17 @@ using UnityEngine.SocialPlatforms;
 public class GameController : MonoBehaviour {
 	// Game Variables
 	public Font gameFont;
+	public Texture soundOn;
+	public Texture soundOff;
+	public Texture controlReg;
+	public Texture controlInv;
+
 
 	public static bool gameIsRunning;
 	public static bool dicePlusConnected;
 	string playerName = "";
 	float playerBest = 0.0F;
+	bool sound;
 	int reverseControls;
 	string leaderboardString = "";
 	int leaderboardCount;
@@ -148,6 +154,12 @@ public class GameController : MonoBehaviour {
 		if(!PlayerPrefs.HasKey ("reverse")){
 			PlayerPrefs.SetInt ("reverse", 1);
 		}
+		if(!PlayerPrefs.HasKey("sound")){
+			PlayerPrefs.SetInt ("sound", 1);
+		}
+		
+		sound = PlayerPrefs.GetInt("sound") == 1;
+		AudioListener.volume = (sound) ? 1.0F : 0.0F;
 
 		playerName = PlayerPrefs.GetString("name");
 		playerBest = PlayerPrefs.GetFloat ("best");
@@ -347,12 +359,26 @@ public class GameController : MonoBehaviour {
 				PlayerPrefs.SetString("name", playerName);
 				ProcessLeaderboard("");
 			}
-			string controlStyle = (reverseControls == 1) ? "Normal":"Reverse";
-			if (GUI.Button(new Rect(0, Screen.height*0.75F, Screen.width/4, Screen.height* 0.25F), "Control: " + controlStyle, buttonStyle)){
-				if(reverseControls == 1) reverseControls = -1;
-				else reverseControls = 1;
-				PlayerPrefs.SetInt("reverse",reverseControls);
+//			string controlStyle = (reverseControls == 1) ? "Normal":"Reverse";
+//			if (GUI.Button(new Rect(0, Screen.height*0.75F, Screen.width/4, Screen.height* 0.25F), "Control: " + controlStyle, buttonStyle)){
+//				if(reverseControls == 1) reverseControls = -1;
+//				else reverseControls = 1;
+//				PlayerPrefs.SetInt("reverse",reverseControls);
+//			}
+
+			Texture soundTexture = (sound) ? soundOn : soundOff;
+			if(GUI.Button(new Rect(Screen.width * 0.05F, Screen.height * 0.80F, Screen.width * 0.10F, Screen.width* 0.10F), soundTexture, buttonStyle)){
+				sound = !sound;
+				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
+				AudioListener.volume = (sound) ? 1.0F:0.0F;
 			}
+
+			Texture controlsTexture = (reverseControls == 1) ? controlReg : controlInv;
+			if(GUI.Button(new Rect(Screen.width * 0.15F, Screen.height * 0.80F, Screen.width * 0.10F, Screen.width* 0.10F), controlsTexture, buttonStyle)){
+				reverseControls = (reverseControls == 1) ? -1: 1;
+				PlayerPrefs.SetInt("reverse", reverseControls);
+			}
+
 			if(dicePlusConnected){
 				GUI.Label(new Rect(Screen.width * 0.75F, Screen.height*0.75F, Screen.width*0.25F, Screen.height * 0.25F), "Hold the 6 toward you as you rotate to steer.", infoStyle);
 			}
@@ -381,12 +407,14 @@ public class GameController : MonoBehaviour {
 
 	private void GetLeaderboard(){
 		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
+//		string url = "http://localhost:8080/leaderboard";
 		WWW www = new WWW(url);
 		StartCoroutine(GetLeaderboardResponse(www));
 	}
 
 	private void ReportScore(string s){
 		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
+//		string url = "http://localhost:8080/leaderboard";
 		WWWForm form = new WWWForm();
 
 		System.DateTime now = System.DateTime.Now;
