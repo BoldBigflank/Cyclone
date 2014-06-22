@@ -1,0 +1,31 @@
+Amazon Head Tracking Unity Plugin Version 1
+Amazon Motion Gestures Unity Plugin Version 1
+
+Release Notes:
+Revision 1 - June 18, 2014
+
+This plugin exposes the HeadTracking and MotionGesture APIs for use in Unity.
+Sample applications in the form of scripts are included to demonstrate basic usage of those APIs.
+
+Files included:
+Assets/Plugins/AmazonCommon/Source/MiniJSON/LICENSE.txt
+Assets/Plugins/AmazonCommon/Source/MiniJSON/MiniJSON.cs
+Assets/Plugins/AmazonHeadTrackingAndMotionGesturesPluginVersion.txt
+Assets/Plugins/AmazonHeadTrackingPlugin/Source/HeadTrackingConfiguration.cs
+Assets/Plugins/AmazonHeadTrackingPlugin/Source/HeadTrackingEvent.cs
+Assets/Plugins/AmazonHeadTrackingPlugin/Source/HeadTrackingManager.cs
+Assets/Plugins/AmazonHeadTrackingPlugin/Source/HeadTrackingPoller.cs
+Assets/Plugins/AmazonHeadTrackingPlugin/Source/HeadTrackingReceiver.cs
+Assets/Plugins/AmazonHeadTrackingPlugin/Example/DisplayLatestHeadTrackingData.unity
+Assets/Plugins/AmazonHeadTrackingPlugin/Example/HeadTrackingSampleActivity.cs
+Assets/Plugins/AmazonMotionGesturesPlugin/Source/GestureEvent.cs
+Assets/Plugins/AmazonMotionGesturesPlugin/Source/GestureListener.cs
+Assets/Plugins/AmazonMotionGesturesPlugin/Source/GestureManager.cs
+Assets/Plugins/AmazonMotionGesturesPlugin/Source/GestureReceiver.cs
+Assets/Plugins/AmazonMotionGesturesPlugin/Example/GestureSampleActivity.cs
+Assets/Plugins/AmazonMotionGesturesPlugin/Example/DisplayLatestGestureData.unity
+Assets/Plugins/Android/libheadtracking_client.so
+Assets/Plugins/Android/amazon-motiongestures-proxy.jar
+Assets/Plugins/AmazonFbxFiles/Materials/sample_dots.mat
+Assets/Plugins/AmazonFbxFiles/icon_sampleapp.fbm/sample_dots.png
+Assets/Plugins/AmazonFbxFiles/icon_sampleapp.fbx
