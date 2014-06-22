@@ -1,8 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameCircleScript.cs">
     <Files>
-      <File FileName="Assets/GameController.cs" Line="231" Column="5" />
+      <File FileName="Assets/GameController.cs" Line="288" Column="37" />
+      <File FileName="Assets/MoveAround.cs" Line="87" Column="35" />
+      <File FileName="Assets/GameCircleScript.cs" Line="40" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

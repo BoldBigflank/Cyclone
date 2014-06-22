@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour {
 
 
 	public static bool gameIsRunning;
+	public static bool betweenRoundGUI;
 	public static bool dicePlusConnected;
 	string playerName = "";
 	float playerBest = 0.0F;
@@ -96,6 +97,7 @@ public class GameController : MonoBehaviour {
 		playButton.SetActive(false);
 
 		gameIsRunning = true;
+		betweenRoundGUI = false;
 		gameStarted = true;
 
 	}
@@ -108,6 +110,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
 
 		gameIsRunning = false;
+		betweenRoundGUI = true;
 		dicePlusConnected = false;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -306,6 +309,7 @@ public class GameController : MonoBehaviour {
 		if(playButtonTime > 0.0F){
 			playButtonTime -= Time.deltaTime;
 			if(playButtonTime <= 0.0F){
+				betweenRoundGUI = true;
 				playButton.SetActive (true);
 			}
 		}
@@ -320,7 +324,8 @@ public class GameController : MonoBehaviour {
 //		dicePlusHandler.SetActive(true);
 
 		// Post the score to the database
-		ReportScore(score.ToString());
+		SendMessage ("ReportScore",score);
+//		ReportScore(score.ToString());
 		PlayerPrefs.SetString ("name", playerName);
 
 		// Update the best
@@ -385,16 +390,16 @@ public class GameController : MonoBehaviour {
 //				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
 //			}
 
-			GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.10F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F2") + " s", buttonStyle);
+			GUI.Label (new Rect(Screen.width * 0.2F, Screen.height * 0.15F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F3") + " s", buttonStyle);
 
 			// This stuff is only after the first death
 			if(gameStarted == true){
-				GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.40F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F2") + " s", buttonStyle);
-				
-				Rect leaderboardRect = new Rect(0,0,Screen.width*0.45F, (1+leaderboardCount) * timeStyle.lineHeight);
-				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.5F, Screen.height * 0.6F), scrollPosition, leaderboardRect, false, false);
-				GUI.Label (leaderboardRect,leaderboardString, timeStyle);
-				GUI.EndScrollView();
+				GUI.Label (new Rect(Screen.width * 0.5F, Screen.height * 0.15F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F3") + " s", buttonStyle);
+
+//				Rect leaderboardRect = new Rect(0,0,Screen.width*0.45F, (1+leaderboardCount) * timeStyle.lineHeight);
+//				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.5F, Screen.height * 0.6F), scrollPosition, leaderboardRect, false, false);
+//				GUI.Label (leaderboardRect,leaderboardString, timeStyle);
+//				GUI.EndScrollView();
 			}
 		} else { // Gameplay
 //			GUI.skin.label.alignment = TextAnchor.LowerCenter;
@@ -410,20 +415,20 @@ public class GameController : MonoBehaviour {
 		StartCoroutine(GetLeaderboardResponse(www));
 	}
 
-	private void ReportScore(string s){
-		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
-//		string url = "http://localhost:8080/leaderboard";
-		WWWForm form = new WWWForm();
-
-		System.DateTime now = System.DateTime.Now;
-
-		form.AddField ("score",s);
-		form.AddField ("name",playerName);
-		form.AddField ("now", now.ToString());
-		form.AddField ("key",Md5Sum (playerName + s + now + "want some salt with that hash"));
-		WWW www = new WWW(url, form);
-		StartCoroutine(ReportResponse(www));
-	}
+//	private void ReportScore(string s){
+//		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
+////		string url = "http://localhost:8080/leaderboard";
+//		WWWForm form = new WWWForm();
+//
+//		System.DateTime now = System.DateTime.Now;
+//
+//		form.AddField ("score",s);
+//		form.AddField ("name",playerName);
+//		form.AddField ("now", now.ToString());
+//		form.AddField ("key",Md5Sum (playerName + s + now + "want some salt with that hash"));
+//		WWW www = new WWW(url, form);
+//		StartCoroutine(ReportResponse(www));
+//	}
 
 	public  string Md5Sum(string strToEncrypt)
 	{
