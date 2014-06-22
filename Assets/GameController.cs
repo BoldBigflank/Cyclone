@@ -218,9 +218,7 @@ public class GameController : MonoBehaviour {
 
 				// Change the lamp's color
 				if(tColor >= 1.0F) SetColor(); // Start the new color
-				
-				
-				
+
 			}
 
 			if(target.transform.position.z > drawnPiecePosition - drawDistance) {

@@ -1,11 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../hexagon/Assets/GameManagerScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameController.cs">
     <Files>
-      <File FileName="../hexagon/Assets/GameManagerScript.cs" Line="77" Column="29" />
-      <File FileName="../hexagon/Assets/HexagonScript.cs" Line="64" Column="36" />
-      <File FileName="../hexagon/Assets/ObstacleScript.cs" Line="44" Column="34" />
-      <File FileName="../hexagon/Assets/ConstructorScript.cs" Line="64" Column="3" />
+      <File FileName="Assets/GameController.cs" Line="231" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
