@@ -415,20 +415,20 @@ public class GameController : MonoBehaviour {
 		StartCoroutine(GetLeaderboardResponse(www));
 	}
 
-//	private void ReportScore(string s){
-//		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
-////		string url = "http://localhost:8080/leaderboard";
-//		WWWForm form = new WWWForm();
-//
-//		System.DateTime now = System.DateTime.Now;
-//
-//		form.AddField ("score",s);
-//		form.AddField ("name",playerName);
-//		form.AddField ("now", now.ToString());
-//		form.AddField ("key",Md5Sum (playerName + s + now + "want some salt with that hash"));
-//		WWW www = new WWW(url, form);
-//		StartCoroutine(ReportResponse(www));
-//	}
+	private void ReportScore(float s){
+		string url = "http://intense-lake-5762.herokuapp.com/leaderboard";
+//		string url = "http://localhost:8080/leaderboard";
+		WWWForm form = new WWWForm();
+
+		System.DateTime now = System.DateTime.Now;
+
+		form.AddField ("score",s.ToString());
+		form.AddField ("name",playerName);
+		form.AddField ("now", now.ToString());
+		form.AddField ("key",Md5Sum (playerName + s + now + "want some salt with that hash"));
+		WWW www = new WWW(url, form);
+		StartCoroutine(ReportResponse(www));
+	}
 
 	public  string Md5Sum(string strToEncrypt)
 	{
