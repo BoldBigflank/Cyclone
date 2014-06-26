@@ -96,7 +96,8 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 
 			cameraPosition.x = HeadTrackingReceiver.lastEvent.x;
 			cameraPosition.y = HeadTrackingReceiver.lastEvent.y;
-			cameraPosition.z = HeadTrackingReceiver.lastEvent.z * -1.0F;
+//			cameraPosition.z = HeadTrackingReceiver.lastEvent.z * -1.0F;
+			cameraPosition.z = HeadTrackingReceiver.lastEvent.z;
 
 			// *** OLD CODE ***
 			// Move the camera in the X/Y plane based on the most recent head tracking data
@@ -120,7 +121,7 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 		lookPosition.y = player.transform.position.y * 0.75F;
 		lookPosition.z = player.transform.position.z;
 
-		camera.transform.position = (Vector3.Scale( Vector3.forward, player.transform.position)) + cameraPosition;
+		camera.transform.position = (Vector3.Scale( Vector3.forward, player.transform.position)) - cameraPosition;
 		camera.transform.LookAt(lookPosition);
 
 

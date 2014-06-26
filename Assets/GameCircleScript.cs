@@ -32,7 +32,7 @@ public class GameCircleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.JoystickButton19) || Input.GetKeyDown(KeyCode.JoystickButton11)){
+		if(Input.GetKeyDown(KeyCode.JoystickButton19) || Input.GetKeyDown(KeyCode.JoystickButton1)){
 			AGSClient.ShowGameCircleOverlay();
 		}
 	}
