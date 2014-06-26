@@ -14,32 +14,41 @@ using UnityEngine;
 public class HeadTrackingSampleActivity : MonoBehaviour {
 
     // Scale at which to move camera based on head movement
-    private static readonly float HEAD_MOVEMENT_SCALE = 100.0f;
+    public float CAMERA_DISTANCE = 10.0f;
 
     // Position of Player object
-    private Vector3 playerPosition;
+    private GameObject player;
+	private Vector3 lookPosition;
 
     // Position of the camera object
+	private GameObject camera;
     private Vector3 cameraPosition;
 
+	// Fake head
+	private GameObject fakeHead;
+	 
     // Initialization
     void Start () {
 
         // Enable auto screen rotation for everything except PortraitUpsideDown.
-        Screen.autorotateToPortrait = true;
-        Screen.autorotateToLandscapeLeft = true;
-        Screen.autorotateToLandscapeRight = true;
-        Screen.autorotateToPortraitUpsideDown = false;
-        Screen.orientation = ScreenOrientation.AutoRotation;
+//        Screen.autorotateToPortrait = true;
+//        Screen.autorotateToLandscapeLeft = true;
+//        Screen.autorotateToLandscapeRight = true;
+//        Screen.autorotateToPortraitUpsideDown = false;
+//        Screen.orientation = ScreenOrientation.AutoRotation;
 
         // Get the position of the Player object
-        playerPosition = GameObject.FindWithTag("Player").transform.position;
+		player = GameObject.FindGameObjectWithTag("Player");
+		camera = GameObject.FindGameObjectWithTag("MainCamera");
+		fakeHead = GameObject.FindGameObjectWithTag("FakeHead");
+//        playerPosition = GameObject.FindWithTag("Player").transform.position;
 
         // Set the initial position of the camera
         cameraPosition = transform.position;
 
         // Have camera look at the Player object
-        transform.LookAt(playerPosition);
+		lookPosition = Vector3.zero;
+        transform.LookAt(lookPosition);
     }
 
     // Loops and redraws the UI
@@ -49,7 +58,7 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
         GUI.skin.label.fontStyle = FontStyle.Bold;
 
         if (!HeadTrackingReceiver.isAvailable) {
-            GUI.Label (new Rect (15, 50, 500, 50), "Head tracking APIs are not supported on this device.");
+//            GUI.Label (new Rect (15, 50, 500, 50), "Head tracking APIs are not supported on this device.");
             return;
         }
 
@@ -85,12 +94,36 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
         if (HeadTrackingReceiver.isAvailable &&
             (HeadTrackingReceiver.lastEvent != null && HeadTrackingReceiver.lastEvent.isTracking)) {
 
-            // Move the camera in the X/Y plane based on the most recent head tracking data
-            cameraPosition.x = HeadTrackingReceiver.lastEvent.x * HEAD_MOVEMENT_SCALE;
-            cameraPosition.y = HeadTrackingReceiver.lastEvent.y * HEAD_MOVEMENT_SCALE;
-            transform.position = cameraPosition;
-            transform.LookAt(playerPosition);
-        }
+			cameraPosition.x = HeadTrackingReceiver.lastEvent.x;
+			cameraPosition.y = HeadTrackingReceiver.lastEvent.y;
+			cameraPosition.z = HeadTrackingReceiver.lastEvent.z * -1.0F;
+
+			// *** OLD CODE ***
+			// Move the camera in the X/Y plane based on the most recent head tracking data
+//            cameraPosition.x = HeadTrackingReceiver.lastEvent.x * HEAD_MOVEMENT_SCALE;
+//            cameraPosition.y = HeadTrackingReceiver.lastEvent.y * HEAD_MOVEMENT_SCALE;
+//            transform.position = cameraPosition;
+//            transform.LookAt(playerPosition);
+        } else {
+			// Use a fake head vector
+			cameraPosition.x = fakeHead.transform.position.x;
+			cameraPosition.y = fakeHead.transform.position.y;
+			cameraPosition.z = fakeHead.transform.position.z * -1.0F;
+
+		}
+
+		// Normalize the camera
+		cameraPosition = CAMERA_DISTANCE * cameraPosition.normalized;
+
+		// Move the camera to the angle
+		lookPosition.x = player.transform.position.x * 0.75F; 
+		lookPosition.y = player.transform.position.y * 0.75F;
+		lookPosition.z = player.transform.position.z;
+
+		camera.transform.position = (Vector3.Scale( Vector3.forward, player.transform.position)) + cameraPosition;
+		camera.transform.LookAt(lookPosition);
+
+
 
     }
 }

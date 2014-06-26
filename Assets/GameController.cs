@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour {
 	GameObject player;
 	GameObject mainCamera;
 	GameObject playButton;
-	GameObject dicePlusHandler;
+//	GameObject dicePlusHandler;
 	public static float score = 0.0F;
 	public AudioClip crashSound;
 
@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour {
 		player.GetComponent<ParticleSystem>().Clear();
 		player.GetComponent<ParticleSystem>().Play();
 
-		dicePlusHandler.SetActive(false);
+//		dicePlusHandler.SetActive(false);
 
 		// Reset if starting a new game
 		GameObject[] segmentsToDelete = GameObject.FindGameObjectsWithTag("LevelSegment");
@@ -117,7 +117,7 @@ public class GameController : MonoBehaviour {
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		playButton = GameObject.FindGameObjectWithTag("PlayButton");
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
-		dicePlusHandler = GameObject.FindGameObjectWithTag("DicePlusHandler");
+//		dicePlusHandler = GameObject.FindGameObjectWithTag("DicePlusHandler");
 		tColor = 0.0F;
 
 		segments = new List<Rigidbody>();
@@ -304,7 +304,46 @@ public class GameController : MonoBehaviour {
 				// dragging
 				scrollPosition.y += Input.touches[0].deltaPosition.y * 16.0F;
 			}
+
+			if(Input.GetTouch(0).phase == TouchPhase.Ended) {
+				ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+				Debug.DrawLine(ray.origin,ray.direction * 10);
+				if (Input.touches[0].phase == TouchPhase.Ended){
+					if(Physics.Raycast (ray, out hit, 10.0F)){
+						if(hit.transform.tag == "PlayButton") StartGame ();
+					}
+				}
+			}
 		}
+
+		if(!gameIsRunning){
+			foreach (KeyCode k in System.Enum.GetValues(typeof(KeyCode)))
+			{
+				if (Input.GetKeyDown(k))
+					Debug.Log(k.ToString());
+			}
+
+			// Sound
+			if(Input.GetKeyDown(KeyCode.JoystickButton2) || Input.GetKeyDown(KeyCode.JoystickButton18)){
+				sound = !sound;
+				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
+				AudioListener.volume = (sound) ? 1.0F:0.0F;
+			}
+
+			// Control
+			if(Input.GetKeyDown(KeyCode.JoystickButton3) || Input.GetKeyDown(KeyCode.JoystickButton19)){
+				reverseControls = (reverseControls == 1) ? -1: 1;
+				PlayerPrefs.SetInt("reverse", reverseControls);
+			}
+
+			// Play
+			if(Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton16)){
+				StartGame ();
+			}
+
+		}
+
+
 
 		if(playButtonTime > 0.0F){
 			playButtonTime -= Time.deltaTime;
@@ -342,15 +381,7 @@ public class GameController : MonoBehaviour {
 
 
 	void FixedUpdate(){
-		if(Input.touchCount == 1) {
-			ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
-			Debug.DrawLine(ray.origin,ray.direction * 10);
-			if (Input.touches[0].phase == TouchPhase.Ended){
-				if(Physics.Raycast (ray, out hit, 10.0F)){
-					if(hit.transform.tag == "PlayButton") StartGame ();
-				}
-			}
-		}
+
 	}
 
 
