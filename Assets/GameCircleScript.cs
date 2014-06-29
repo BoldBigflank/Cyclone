@@ -5,6 +5,7 @@ public class GameCircleScript : MonoBehaviour {
     bool isServiceReady;
 	string[] leaderboards;
 	public Texture gameCircle;
+	public Texture bTexture;
 	
 	public GUIStyle buttonStyle;
 
@@ -62,8 +63,11 @@ public class GameCircleScript : MonoBehaviour {
 
 	void OnGUI(){
 		if(GameController.betweenRoundGUI){
-			if(GUI.Button(new Rect(Screen.width * 0.25F, Screen.height * 0.80F, Screen.width * 0.10F, Screen.width* 0.10F), gameCircle, buttonStyle)){
+			if(GUI.Button(new Rect(Screen.width * 0.6F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), gameCircle, buttonStyle)){
 				AGSClient.ShowGameCircleOverlay();
+			}
+			if(GameController.controllerConnected){
+				GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), bTexture);
 			}
 		}
 	}

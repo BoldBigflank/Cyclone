@@ -10,11 +10,15 @@ public class GameController : MonoBehaviour {
 	public Texture soundOff;
 	public Texture controlReg;
 	public Texture controlInv;
-
+	public Texture playTexture;
+	public Texture aTexture;
+	public Texture bTexture;
+	public Texture xTexture;
+	public Texture yTexture;
 
 	public static bool gameIsRunning;
 	public static bool betweenRoundGUI;
-	public static bool dicePlusConnected;
+	public static bool controllerConnected;
 	string playerName = "";
 	float playerBest = 0.0F;
 	bool sound;
@@ -26,7 +30,7 @@ public class GameController : MonoBehaviour {
 
 	GameObject player;
 	GameObject mainCamera;
-	GameObject playButton;
+//	GameObject playButton;
 //	GameObject dicePlusHandler;
 	public static float score = 0.0F;
 	public AudioClip crashSound;
@@ -63,6 +67,7 @@ public class GameController : MonoBehaviour {
 	int colorIndex;
 	float tColor;
 	Light cameraLight;
+	Color obstacleColorMix = new Color(0.3F, 0.3F, 0.3F);
 
 	// Game over button hidden
 	float playButtonDelay = 1.0F;
@@ -94,7 +99,7 @@ public class GameController : MonoBehaviour {
 		SetColor(Color.white);
 
 		// Change button text if starting over
-		playButton.SetActive(false);
+//		playButton.SetActive(false);
 
 		gameIsRunning = true;
 		betweenRoundGUI = false;
@@ -111,11 +116,11 @@ public class GameController : MonoBehaviour {
 
 		gameIsRunning = false;
 		betweenRoundGUI = true;
-		dicePlusConnected = false;
+		controllerConnected = Input.GetJoystickNames().Length > 0;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-		playButton = GameObject.FindGameObjectWithTag("PlayButton");
+//		playButton = GameObject.FindGameObjectWithTag("PlayButton");
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 //		dicePlusHandler = GameObject.FindGameObjectWithTag("DicePlusHandler");
 		tColor = 0.0F;
@@ -124,15 +129,33 @@ public class GameController : MonoBehaviour {
 
 		cameraLight = mainCamera.GetComponent<Light>();
 		colors = new List<Color>();
-		colors.Add(Color.red);
-		colors.Add(Color.yellow);
-		colors.Add(Color.green);
-		colors.Add(Color.cyan);
-		colors.Add(Color.blue);
-		colors.Add(Color.magenta);
+//		colors.Add(Color.red);
+//		colors.Add(Color.yellow);
+//		colors.Add(Color.green);
+//		colors.Add(Color.cyan);
+//		colors.Add(Color.blue);
+//		colors.Add(Color.magenta);
 
+		colors.Add(HexToColor("8a188c"));
+		colors.Add(HexToColor("920c82"));
+		colors.Add(HexToColor("9b0078"));
+		colors.Add(HexToColor("b8075e"));
+		colors.Add(HexToColor("d50e44"));
+		colors.Add(HexToColor("ea6142"));
+		colors.Add(HexToColor("ffb440"));
+		colors.Add(HexToColor("ffd932"));
+		colors.Add(HexToColor("ffff25"));
+		colors.Add(HexToColor("92e62d"));
+		colors.Add(HexToColor("26ce35"));
+		colors.Add(HexToColor("13bd8f"));
+		colors.Add(HexToColor("00adea"));
+		colors.Add(HexToColor("2787de"));
+		colors.Add(HexToColor("4f61d3"));
+		colors.Add(HexToColor("6c3caf"));
+
+		
 		colorIndex = 0;
-
+		
 		// Style stuff
 		labelStyle.font = gameFont;
 		timeStyle.font = gameFont;
@@ -196,12 +219,14 @@ public class GameController : MonoBehaviour {
 			tColor += Time.deltaTime / colorDuration; // advance timer at the right speed
 			Color endColor = (gameIsRunning) ? colors[(colorIndex+1)%colors.Count] : Color.black;
 			newColor = Color.Lerp(currentColor, endColor, tColor);
+			Color obstacleColor = newColor + obstacleColorMix;
 			cameraLight.color = newColor;
 			foreach (Rigidbody segment in segments){
 				segment.renderer.material.SetColor ("_Color", newColor);
 			}
 			foreach (Rigidbody obstacle in obstacles){
-				obstacle.renderer.material.SetColor ("_Color", newColor);
+
+				obstacle.renderer.material.SetColor ("_Color", obstacleColor);
 			}
 
 			// Particle system color
@@ -289,7 +314,7 @@ public class GameController : MonoBehaviour {
 			GameObject[] controlButtons = GameObject.FindGameObjectsWithTag("ControlButton");
 			foreach(GameObject o in controlButtons){
 				float visibility = (5.0F - score)/5.0F;
-				if (dicePlusConnected) visibility = 0.0F;
+//				if (dicePlusConnected) visibility = 0.0F;
 //				obstacle.renderer.material.SetColor ("_Color", newColor);
 				Color c = o.renderer.material.color;
 				c.a = Mathf.Max(visibility, 0.0F);
@@ -316,7 +341,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		if(!gameIsRunning){
+		if(!gameIsRunning && playButtonTime <= 0.0F){
 			foreach (KeyCode k in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				if (Input.GetKeyDown(k))
@@ -349,7 +374,7 @@ public class GameController : MonoBehaviour {
 			playButtonTime -= Time.deltaTime;
 			if(playButtonTime <= 0.0F){
 				betweenRoundGUI = true;
-				playButton.SetActive (true);
+//				playButton.SetActive (true);
 			}
 		}
 
@@ -387,45 +412,56 @@ public class GameController : MonoBehaviour {
 
 	void OnGUI(){
 		if(!gameIsRunning && playButtonTime <= 0.0F){  // Between rounds
-			playerName = GUI.TextField (new Rect(Screen.width/4, 0, Screen.width/2, Screen.height * 0.1F), playerName, 16, buttonStyle);
-			if(GUI.changed) {
-				playerName = playerName.ToLower();
-				PlayerPrefs.SetString("name", playerName);
-				ProcessLeaderboard("");
-			}
-//			string controlStyle = (reverseControls == 1) ? "Normal":"Reverse";
-//			if (GUI.Button(new Rect(0, Screen.height*0.75F, Screen.width/4, Screen.height* 0.25F), "Control: " + controlStyle, buttonStyle)){
-//				if(reverseControls == 1) reverseControls = -1;
-//				else reverseControls = 1;
-//				PlayerPrefs.SetInt("reverse",reverseControls);
+//			playerName = GUI.TextField (new Rect(Screen.width/4, 0, Screen.width/2, Screen.height * 0.1F), playerName, 16, buttonStyle);
+//			if(GUI.changed) {
+//				playerName = playerName.ToLower();
+//				PlayerPrefs.SetString("name", playerName);
+//				ProcessLeaderboard("");
 //			}
 
 			Texture soundTexture = (sound) ? soundOn : soundOff;
-			if(GUI.Button(new Rect(Screen.width * 0.05F, Screen.height * 0.80F, Screen.width * 0.10F, Screen.width* 0.10F), soundTexture, buttonStyle)){
+			if(GUI.Button(new Rect(Screen.width * 0.30F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), soundTexture, buttonStyle)){
 				sound = !sound;
 				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
 				AudioListener.volume = (sound) ? 1.0F:0.0F;
 			}
 
 			Texture controlsTexture = (reverseControls == 1) ? controlReg : controlInv;
-			if(GUI.Button(new Rect(Screen.width * 0.15F, Screen.height * 0.80F, Screen.width * 0.10F, Screen.width* 0.10F), controlsTexture, buttonStyle)){
+			if(GUI.Button(new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), controlsTexture, buttonStyle)){
 				reverseControls = (reverseControls == 1) ? -1: 1;
 				PlayerPrefs.SetInt("reverse", reverseControls);
 			}
 
-			if(dicePlusConnected){
-				GUI.Label(new Rect(Screen.width * 0.75F, Screen.height*0.75F, Screen.width*0.25F, Screen.height * 0.25F), "Hold the 6 toward you as you rotate to steer.", infoStyle);
+			if(GUI.Button(new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.20F, Screen.width* 0.10F), playTexture, buttonStyle)){
+				StartGame();
 			}
+			
+
+
+//			if(dicePlusConnected){
+//				GUI.Label(new Rect(Screen.width * 0.75F, Screen.height*0.75F, Screen.width*0.25F, Screen.height * 0.25F), "Hold the 6 toward you as you rotate to steer.", infoStyle);
+//			}
 //			if (score > 0){
 //				GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
 //				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
 //			}
 
-			GUI.Label (new Rect(Screen.width * 0.2F, Screen.height * 0.15F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F3") + " s", buttonStyle);
+			GUI.Label (new Rect(Screen.width * 0.2F, Screen.height * 0.25F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F3") + " s", buttonStyle);
+
+			// If there is a controller, show the buttons
+			if(controllerConnected){
+				// Sound (x)
+				GUI.Label (new Rect(Screen.width * 0.30F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), xTexture);
+				// Controls (y)
+				GUI.Label (new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), yTexture);
+				// Play (a)
+				GUI.Label (new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.05F, Screen.width* 0.05F), aTexture);
+			}
+
 
 			// This stuff is only after the first death
 			if(gameStarted == true){
-				GUI.Label (new Rect(Screen.width * 0.5F, Screen.height * 0.15F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F3") + " s", buttonStyle);
+				GUI.Label (new Rect(Screen.width * 0.5F, Screen.height * 0.25F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F3") + " s", buttonStyle);
 
 //				Rect leaderboardRect = new Rect(0,0,Screen.width*0.45F, (1+leaderboardCount) * timeStyle.lineHeight);
 //				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.5F, Screen.height * 0.6F), scrollPosition, leaderboardRect, false, false);
@@ -522,5 +558,13 @@ public class GameController : MonoBehaviour {
 		} else {
 			Debug.Log("POST Error: "+ www.error);
 		}    
+	}
+
+	Color HexToColor(string hex)
+	{
+		byte r = byte.Parse(hex.Substring(0,2), System.Globalization.NumberStyles.HexNumber);
+		byte g = byte.Parse(hex.Substring(2,2), System.Globalization.NumberStyles.HexNumber);
+		byte b = byte.Parse(hex.Substring(4,2), System.Globalization.NumberStyles.HexNumber);
+		return new Color32(r,g,b, 255);
 	}
 }

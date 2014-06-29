@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\CameraPulse.cs" />
-     <Compile Include="Assets\DicePlusScript.cs" />
      <Compile Include="Assets\GameCircleScript.cs" />
      <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\JSONObject.cs" />
