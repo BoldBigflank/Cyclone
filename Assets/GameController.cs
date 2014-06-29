@@ -75,8 +75,8 @@ public class GameController : MonoBehaviour {
 	
 	void StartGame(){
 		player.SendMessage("Reset");
-		player.GetComponent<ParticleSystem>().Clear();
-		player.GetComponent<ParticleSystem>().Play();
+//		player.GetComponent<ParticleSystem>().Clear();
+//		player.GetComponent<ParticleSystem>().Play();
 
 //		dicePlusHandler.SetActive(false);
 
@@ -230,7 +230,7 @@ public class GameController : MonoBehaviour {
 			}
 
 			// Particle system color
-			player.GetComponent<ParticleSystem>().startColor = newColor;
+//			player.GetComponent<ParticleSystem>().startColor = newColor;
 
 		}
 		if(gameIsRunning){
@@ -383,7 +383,7 @@ public class GameController : MonoBehaviour {
 	void GameOver(){
 		gameIsRunning = false;
 		SetColor(Color.white);
-		player.GetComponent<ParticleSystem>().Stop();
+//		player.GetComponent<ParticleSystem>().Stop();
 		playButtonTime = playButtonDelay;
 //		dicePlusHandler.SetActive(true);
 

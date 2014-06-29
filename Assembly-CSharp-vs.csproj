@@ -50,6 +50,7 @@
      <Compile Include="Assets\GameCircleScript.cs" />
      <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\JSONObject.cs" />
+     <Compile Include="Assets\LineScript.cs" />
      <Compile Include="Assets\MemoryScript.cs" />
      <Compile Include="Assets\MoveAround.cs" />
      <Compile Include="Assets\PlayButtonScript.cs" />
