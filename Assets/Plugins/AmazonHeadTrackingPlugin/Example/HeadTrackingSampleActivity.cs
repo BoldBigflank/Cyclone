@@ -47,8 +47,13 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
         cameraPosition = transform.position;
 
         // Have camera look at the Player object
-		lookPosition = Vector3.zero;
-        transform.LookAt(lookPosition);
+//		lookPosition = Vector3.zero;
+//        transform.LookAt(lookPosition);
+		if(!HeadTrackingReceiver.isAvailable){
+//			camera.GetComponent<SmoothLookAt>().enabled = true;
+		}
+
+
     }
 
     // Loops and redraws the UI
