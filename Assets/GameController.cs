@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour {
 	public static bool gameIsRunning;
 	public static bool betweenRoundGUI;
 	public static bool controllerConnected;
+	public static bool headTracking;
 	string playerName = "";
 	float playerBest = 0.0F;
 	bool sound;
@@ -117,6 +118,7 @@ public class GameController : MonoBehaviour {
 		gameIsRunning = false;
 		betweenRoundGUI = true;
 		controllerConnected = Input.GetJoystickNames().Length > 0;
+		headTracking = false;
 		// Find the player object
 		player = GameObject.FindGameObjectWithTag("Player");
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");

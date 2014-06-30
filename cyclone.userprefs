@@ -1,14 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Plugins/AmazonHeadTrackingPlugin/Example/HeadTrackingSampleActivity.cs">
     <Files>
-      <File FileName="Assets/GameController.cs" Line="354" Column="11" />
-      <File FileName="Assets/Standard Assets/Scripts/Camera Scripts/SmoothLookAtDistance.js" Line="1" Column="1" />
-      <File FileName="Assets/Plugins/AmazonHeadTrackingPlugin/Example/HeadTrackingSampleActivity.cs" Line="109" Column="29" />
+      <File FileName="Assets/GameController.cs" Line="20" Column="10" />
+      <File FileName="Assets/Standard Assets/Scripts/Camera Scripts/SmoothLookAtDistance.js" Line="20" Column="9" />
+      <File FileName="Assets/Plugins/AmazonHeadTrackingPlugin/Example/HeadTrackingSampleActivity.cs" Line="123" Column="11" />
       <File FileName="Assets/Plugins/AmazonHeadTrackingPlugin/Source/HeadTrackingReceiver.cs" Line="19" Column="36" />
-      <File FileName="Assets/GameController.cs" Line="571" Column="1" />
-      <File FileName="Assets/GameCircleScript.cs" Line="70" Column="109" />
-      <File FileName="Assets/MoveAround.cs" Line="128" Column="45" />
+      <File FileName="Assets/GameCircleScript.cs" Line="76" Column="27" />
+      <File FileName="Assets/MoveAround.cs" Line="40" Column="27" />
+      <File FileName="Assets/LineScript.cs" Line="21" Column="11" />
+      <File FileName="Assets/CameraPulse.cs" Line="29" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

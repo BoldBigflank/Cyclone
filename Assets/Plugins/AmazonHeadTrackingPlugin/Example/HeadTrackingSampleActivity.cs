@@ -15,13 +15,14 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 
     // Scale at which to move camera based on head movement
     public float CAMERA_DISTANCE = 10.0f;
+	public bool test = false;
 
     // Position of Player object
     private GameObject player;
 	private Vector3 lookPosition;
 
     // Position of the camera object
-	private GameObject camera;
+	private GameObject mainCamera;
     private Vector3 cameraPosition;
 
 	// Fake head
@@ -39,20 +40,8 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 
         // Get the position of the Player object
 		player = GameObject.FindGameObjectWithTag("Player");
-		camera = GameObject.FindGameObjectWithTag("MainCamera");
+		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		fakeHead = GameObject.FindGameObjectWithTag("FakeHead");
-//        playerPosition = GameObject.FindWithTag("Player").transform.position;
-
-        // Set the initial position of the camera
-        cameraPosition = transform.position;
-
-        // Have camera look at the Player object
-//		lookPosition = Vector3.zero;
-//        transform.LookAt(lookPosition);
-		if(!HeadTrackingReceiver.isAvailable){
-//			camera.GetComponent<SmoothLookAt>().enabled = true;
-		}
-
 
     }
 
@@ -62,7 +51,7 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
         GUI.skin.label.fontSize = 20;
         GUI.skin.label.fontStyle = FontStyle.Bold;
 
-        if (!HeadTrackingReceiver.isAvailable) {
+        if (HeadTrackingReceiver.isAvailable) {
 //            GUI.Label (new Rect (15, 50, 500, 50), "Head tracking APIs are not supported on this device.");
             return;
         }
@@ -89,12 +78,6 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
     }
 
     void Update() {
-
-        // Exit application
-        if (Input.GetKey(KeyCode.Escape)) {
-           Application.Quit();
-        }
-
         // If an event is available and the data is valid, move the camera
         if (HeadTrackingReceiver.isAvailable &&
             (HeadTrackingReceiver.lastEvent != null && HeadTrackingReceiver.lastEvent.isTracking)) {
@@ -111,6 +94,7 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 //            transform.position = cameraPosition;
 //            transform.LookAt(playerPosition);
         } else {
+			if(!test) return;
 			// Use a fake head vector
 			cameraPosition.x = fakeHead.transform.position.x;
 			cameraPosition.y = fakeHead.transform.position.y;
@@ -128,14 +112,14 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 		lookPosition.z = player.transform.position.z;
 
 
-		camera.transform.rotation = Quaternion.LookRotation(Vector3.Scale(cameraPosition, new Vector3(-1.0F, -1.0F, 1.0F) ) ) ;
+		mainCamera.transform.rotation = Quaternion.LookRotation(Vector3.Scale(cameraPosition, new Vector3(-1.0F, -1.0F, 1.0F) ) ) ;
 
 		// FOV is unnecessary, because the angle between 15cm and 50 cm is almost negligible (30deg and 11deg)
 //		float fov = Mathf.Rad2Deg * Mathf.Atan(0.0508F/cameraPosition.z);
 //		camera.GetComponent<Camera>().fieldOfView = Mathf.Clamp(fov, 60.0F, 75.0F);
 
 		// This will move the camera to the angle 
-		camera.transform.position = (Vector3.Scale( Vector3.forward, player.transform.position))  + Vector3.back * CAMERA_DISTANCE;
+		mainCamera.transform.position = (Vector3.Scale( Vector3.forward, player.transform.position))  + Vector3.back * CAMERA_DISTANCE;
 //		camera.transform.LookAt(lookPosition);
 
 
