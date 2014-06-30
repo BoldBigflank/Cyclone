@@ -47,18 +47,14 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\SmoothFollow.js" />
-     <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\SmoothLookAtDistance.js" />
      <None Include="Assets\Plugins\AmazonGameCircleLicense.txt" />
      <None Include="Assets\Plugins\Android\assets\api_key.txt" />
      <None Include="Assets\Plugins\AmazonGameCirclePluginVersion.txt" />
      <None Include="Assets\Plugins\AmazonCommon\Source\MiniJSON\LICENSE.txt" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
-     <None Include="Assets\Plugins\DicePlus\shaders\OverlayText.shader" />
-     <None Include="Assets\Plugins\DicePlus\shaders\Overlay.shader" />
      <None Include="Assets\Plugins\AmazonGameCircleNotice.txt" />
      <None Include="Assets\Plugins\AmazonHeadTrackingAndMotionGesturesPluginVersion.txt" />
      <None Include="Assets\Plugins\Android\res\drawable\gc_overlay_spinner.xml" />
-     <None Include="Assets\Plugins\DicePlus\shaders\Overlay-Spinner.shader" />
      <None Include="Assets\Plugins\Android\res\drawable\rounded_corners.xml" />
      <None Include="Assets\Plugins\Android\GameCircleSampleAndroidManifest.xml" />
      <None Include="Assets\Plugins\Android\res\layout\modal_overlay_container.xml" />

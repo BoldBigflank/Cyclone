@@ -63,11 +63,14 @@ public class GameCircleScript : MonoBehaviour {
 
 	void OnGUI(){
 		if(GameController.betweenRoundGUI){
-			if(GUI.Button(new Rect(Screen.width * 0.6F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), gameCircle, buttonStyle)){
-				AGSClient.ShowGameCircleOverlay();
-			}
-			if(GameController.controllerConnected){
-				GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), bTexture);
+			if(isServiceReady){
+				if(GUI.Button(new Rect(Screen.width * 0.6F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), gameCircle, buttonStyle)){
+					AGSClient.ShowGameCircleOverlay();
+				}
+			
+				if(GameController.controllerConnected){
+					GUI.Label (new Rect(Screen.width * 0.6F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), bTexture);
+				}
 			}
 		}
 	}
