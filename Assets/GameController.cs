@@ -75,6 +75,10 @@ public class GameController : MonoBehaviour {
 	float playButtonTime = 0.0F;
 	
 	void StartGame(){
+		controllerConnected = Input.GetJoystickNames().Length > 0;
+		foreach(string s in Input.GetJoystickNames()){
+			Debug.Log ("Joystick: " + s);
+		}
 		player.SendMessage("Reset");
 //		player.GetComponent<ParticleSystem>().Clear();
 //		player.GetComponent<ParticleSystem>().Play();
@@ -85,12 +89,15 @@ public class GameController : MonoBehaviour {
 		GameObject[] segmentsToDelete = GameObject.FindGameObjectsWithTag("LevelSegment");
 		foreach(GameObject s in segmentsToDelete){
 			segments.Remove (s.rigidbody);
+			foreach(Material m in s.renderer.materials)
+				DestroyImmediate(m);
 			Destroy(s);
 		}
 
 		GameObject[] obstaclesToDelete = GameObject.FindGameObjectsWithTag("Obstacle");
 		foreach(GameObject o in obstaclesToDelete){
 			obstacles.Remove (o.rigidbody);
+			DestroyImmediate (o.renderer.material);
 			Destroy (o);
 		}
 
@@ -193,6 +200,11 @@ public class GameController : MonoBehaviour {
 		playerBest = PlayerPrefs.GetFloat ("best");
 		reverseControls = PlayerPrefs.GetInt ("reverse");
 		GetLeaderboard();
+
+		// Hide touch control buttons
+		if(controllerConnected){
+
+		}
 	}
 
 
@@ -291,7 +303,8 @@ public class GameController : MonoBehaviour {
 					Rigidbody segmentToDestroy = segments[0];
 					
 					segments.Remove(segmentToDestroy);
-					
+					foreach(Material m in segmentToDestroy.gameObject.renderer.materials)
+						DestroyImmediate (m);
 					Destroy ( segmentToDestroy.gameObject);
 					
 				}
@@ -306,6 +319,7 @@ public class GameController : MonoBehaviour {
 					}
 					foreach (Rigidbody obstacle in obstaclesToRemove){
 						obstacles.Remove(obstacle);
+						Destroy (obstacle.gameObject.renderer.material);
 						Destroy (obstacle.gameObject);
 					}
 
@@ -316,7 +330,7 @@ public class GameController : MonoBehaviour {
 			GameObject[] controlButtons = GameObject.FindGameObjectsWithTag("ControlButton");
 			foreach(GameObject o in controlButtons){
 				float visibility = (5.0F - score)/5.0F;
-//				if (dicePlusConnected) visibility = 0.0F;
+				if (controllerConnected) visibility = 0.0F;
 //				obstacle.renderer.material.SetColor ("_Color", newColor);
 				Color c = o.renderer.material.color;
 				c.a = Mathf.Max(visibility, 0.0F);
@@ -351,14 +365,14 @@ public class GameController : MonoBehaviour {
 			}
 
 			// Sound
-			if(Input.GetKeyDown(KeyCode.JoystickButton2) || Input.GetKeyDown(KeyCode.JoystickButton18)){
+			if(Input.GetKeyDown(KeyCode.JoystickButton2) || Input.GetKeyDown(KeyCode.JoystickButton18) || Input.GetKeyDown (KeyCode.LeftArrow)){
 				sound = !sound;
 				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
 				AudioListener.volume = (sound) ? 1.0F:0.0F;
 			}
 
 			// Control
-			if(Input.GetKeyDown(KeyCode.JoystickButton3) || Input.GetKeyDown(KeyCode.JoystickButton19)){
+			if(Input.GetKeyDown(KeyCode.JoystickButton3) || Input.GetKeyDown(KeyCode.JoystickButton19) || Input.GetKeyDown (KeyCode.UpArrow)){
 				reverseControls = (reverseControls == 1) ? -1: 1;
 				PlayerPrefs.SetInt("reverse", reverseControls);
 			}

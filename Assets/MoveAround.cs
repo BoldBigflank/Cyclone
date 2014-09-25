@@ -84,6 +84,8 @@ public class MoveAround : MonoBehaviour {
 			{
 //				Debug.Log("Collided"+ "(" + hit.point.x + ", " + hit.point.y + ", " + hit.point.z + ")");
 //				transform.position = hit.point;
+				GameObject g = hit.collider.gameObject;
+				iTween.PunchScale(hit.collider.gameObject, 0.5F * g.transform.localScale, 1.0F);
 				audio.PlayOneShot(crashSound);
 				GameOver();
 				gameController.SendMessage ("GameOver");
@@ -105,9 +107,11 @@ public class MoveAround : MonoBehaviour {
 	}
 
 	void Reset(){
+		transform.localScale = 2.0F * Vector3.one;
 //		Debug.Log ("MoveAround - Reset");
 		lastPosition = new Vector3(startX, startY, 10.0F);
 		transform.position = new Vector3(startX, startY, 10.0F);
+		iTween.ScaleTo(gameObject, 0.8F*Vector3.one, 1.0F);
 		forwardSpeed = startingSpeed;
 		totalTime = 0;
 		reverseControls = PlayerPrefs.GetInt("reverse");
@@ -116,6 +120,7 @@ public class MoveAround : MonoBehaviour {
 	void GameOver(){
 		forwardSpeed = 0.0F;
 		GameController.gameIsRunning = false;
+		iTween.ShakeScale (gameObject, 2*Vector3.one, 0.6F);
 	}
 
 	void FixedUpdate(){
