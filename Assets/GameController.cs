@@ -360,8 +360,11 @@ public class GameController : MonoBehaviour {
 		if(!gameIsRunning && playButtonTime <= 0.0F){
 			foreach (KeyCode k in System.Enum.GetValues(typeof(KeyCode)))
 			{
-				if (Input.GetKeyDown(k))
+				if (Input.GetKeyDown(k)){
+					controllerConnected = true;
 					Debug.Log(k.ToString());
+				}
+
 			}
 
 			// Sound
@@ -378,7 +381,7 @@ public class GameController : MonoBehaviour {
 			}
 
 			// Play
-			if(Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton16)){
+			if(Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton16) || Input.GetKeyDown(KeyCode.DownArrow)){
 				StartGame ();
 			}
 
