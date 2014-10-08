@@ -454,7 +454,7 @@ public class GameController : MonoBehaviour {
 			if(GUI.Button(new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.20F, Screen.width* 0.10F), playTexture, buttonStyle)){
 				StartGame();
 			}
-			
+
 
 
 //			if(dicePlusConnected){
@@ -475,7 +475,12 @@ public class GameController : MonoBehaviour {
 				GUI.Label (new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), yTexture);
 				// Play (a)
 				GUI.Label (new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.05F, Screen.width* 0.05F), aTexture);
+			} else {
+				if(GUI.Button(new Rect(Screen.width * 0.65F, Screen.height * 0.85F, Screen.width * 0.35F, Screen.width* 0.05F), "More Games", buttonStyle)){
+					Application.OpenURL("http://bold-it.com/games-by-alex-swan/");
+				}
 			}
+
 
 
 			// This stuff is only after the first death
