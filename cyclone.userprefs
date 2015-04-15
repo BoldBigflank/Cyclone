@@ -1,8 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../tunnel/Assets/Vectrosity/Documentation/Vectrosity changelog.txt">
+  <MonoDevelop.Ide.Workbench ActiveDocument="../hexagon/Assets/Scripts/GameManagerScript.cs">
     <Files>
-      <File FileName="../tunnel/Assets/Vectrosity/Documentation/Vectrosity changelog.txt" Line="1" Column="1" />
+      <File FileName="../hexagon/Assets/Scripts/GameManagerScript.cs" Line="51" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

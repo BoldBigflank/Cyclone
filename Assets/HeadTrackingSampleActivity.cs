@@ -57,8 +57,8 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 
 		// Default Camera Movement
 		// Make the rigid body not change rotation
-		if (rigidbody)
-			rigidbody.freezeRotation = true;
+		if (GetComponent<Rigidbody>())
+			GetComponent<Rigidbody>().freezeRotation = true;
 		t = 0.0F;
 
     }
@@ -105,7 +105,11 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 //			cameraPosition.z = HeadTrackingReceiver.lastEvent.z * -1.0F;
 			cameraPosition.z = HeadTrackingReceiver.lastEvent.z;
 
-			mainCamera.transform.rotation = Quaternion.LookRotation(Vector3.Scale(cameraPosition, new Vector3(-1.0F, -1.0F, 1.0F) ) ) ;
+			if(Input.deviceOrientation == DeviceOrientation.LandscapeLeft){
+				cameraPosition = Vector3.Scale (cameraPosition, new Vector3(-1.0F, -1.0F, 1.0F));
+			}
+
+			mainCamera.transform.rotation = Quaternion.LookRotation( cameraPosition ) ;
 			// This will move the camera to the angle 
 			mainCamera.transform.position = (Vector3.Scale( Vector3.forward, player.transform.position))  + Vector3.back * CAMERA_DISTANCE;
 			

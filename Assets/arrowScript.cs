@@ -7,7 +7,7 @@ public class arrowScript : MonoBehaviour {
 	void Start () {
 		startScale = transform.localScale;
 
-		iTween.PunchScale(gameObject, iTween.Hash( "amount", 2.0F * startScale, "looptype",iTween.LoopType.loop));
+//		iTween.PunchScale(gameObject, iTween.Hash( "amount", 2.0F * startScale, "looptype",iTween.LoopType.loop));
 
 	}
 	

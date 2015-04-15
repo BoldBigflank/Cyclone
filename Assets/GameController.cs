@@ -88,16 +88,16 @@ public class GameController : MonoBehaviour {
 		// Reset if starting a new game
 		GameObject[] segmentsToDelete = GameObject.FindGameObjectsWithTag("LevelSegment");
 		foreach(GameObject s in segmentsToDelete){
-			segments.Remove (s.rigidbody);
-			foreach(Material m in s.renderer.materials)
+			segments.Remove (s.GetComponent<Rigidbody>());
+			foreach(Material m in s.GetComponent<Renderer>().materials)
 				DestroyImmediate(m);
 			Destroy(s);
 		}
 
 		GameObject[] obstaclesToDelete = GameObject.FindGameObjectsWithTag("Obstacle");
 		foreach(GameObject o in obstaclesToDelete){
-			obstacles.Remove (o.rigidbody);
-			DestroyImmediate (o.renderer.material);
+			obstacles.Remove (o.GetComponent<Rigidbody>());
+			DestroyImmediate (o.GetComponent<Renderer>().material);
 			Destroy (o);
 		}
 
@@ -236,11 +236,11 @@ public class GameController : MonoBehaviour {
 			Color obstacleColor = newColor + obstacleColorMix;
 			cameraLight.color = newColor;
 			foreach (Rigidbody segment in segments){
-				segment.renderer.material.SetColor ("_Color", newColor);
+				segment.GetComponent<Renderer>().material.SetColor ("_Color", newColor);
 			}
 			foreach (Rigidbody obstacle in obstacles){
 
-				obstacle.renderer.material.SetColor ("_Color", obstacleColor);
+				obstacle.GetComponent<Renderer>().material.SetColor ("_Color", obstacleColor);
 			}
 
 			// Particle system color
@@ -254,7 +254,7 @@ public class GameController : MonoBehaviour {
 				
 				// Create the cylinder
 				Rigidbody instantiatedCylinder = (Rigidbody) Instantiate(cylinder, Vector3.forward * (drawnLevelPosition + 25.0F), Quaternion.Euler(0.0f, 0.0f, 12.0f) );
-				instantiatedCylinder.renderer.material.mainTexture = textures[ (int)instantiatedCylinder.transform.position.z / distancePerSection % textures.Length ]; // Random.Range(0,textures.Length)
+				instantiatedCylinder.GetComponent<Renderer>().material.mainTexture = textures[ (int)instantiatedCylinder.transform.position.z / distancePerSection % textures.Length ]; // Random.Range(0,textures.Length)
 				segments.Add (instantiatedCylinder);
 				drawnLevelPosition += 50.0F;
 
@@ -303,7 +303,7 @@ public class GameController : MonoBehaviour {
 					Rigidbody segmentToDestroy = segments[0];
 					
 					segments.Remove(segmentToDestroy);
-					foreach(Material m in segmentToDestroy.gameObject.renderer.materials)
+					foreach(Material m in segmentToDestroy.gameObject.GetComponent<Renderer>().materials)
 						DestroyImmediate (m);
 					Destroy ( segmentToDestroy.gameObject);
 					
@@ -319,7 +319,7 @@ public class GameController : MonoBehaviour {
 					}
 					foreach (Rigidbody obstacle in obstaclesToRemove){
 						obstacles.Remove(obstacle);
-						Destroy (obstacle.gameObject.renderer.material);
+						Destroy (obstacle.gameObject.GetComponent<Renderer>().material);
 						Destroy (obstacle.gameObject);
 					}
 
@@ -332,9 +332,9 @@ public class GameController : MonoBehaviour {
 				float visibility = (5.0F - score)/5.0F;
 				if (controllerConnected) visibility = 0.0F;
 //				obstacle.renderer.material.SetColor ("_Color", newColor);
-				Color c = o.renderer.material.color;
+				Color c = o.GetComponent<Renderer>().material.color;
 				c.a = Mathf.Max(visibility, 0.0F);
-				o.renderer.material.SetColor("_Color", c);
+				o.GetComponent<Renderer>().material.SetColor("_Color", c);
 			}
 
 		}
@@ -346,22 +346,22 @@ public class GameController : MonoBehaviour {
 				scrollPosition.y += Input.touches[0].deltaPosition.y * 16.0F;
 			}
 
-			if(Input.GetTouch(0).phase == TouchPhase.Ended) {
-				ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
-				Debug.DrawLine(ray.origin,ray.direction * 10);
-				if (Input.touches[0].phase == TouchPhase.Ended){
-					if(Physics.Raycast (ray, out hit, 10.0F)){
-						if(hit.transform.tag == "PlayButton") StartGame ();
-					}
-				}
-			}
+//			if(Input.GetTouch(0).phase == TouchPhase.Ended) {
+//				ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+//				Debug.DrawLine(ray.origin,ray.direction * 10);
+//				if (Input.touches[0].phase == TouchPhase.Ended){
+//					if(Physics.Raycast (ray, out hit, 10.0F)){
+//						if(hit.transform.tag == "PlayButton") StartGame ();
+//					}
+//				}
+//			}
 		}
 
 		if(!gameIsRunning && playButtonTime <= 0.0F){
 			foreach (KeyCode k in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				if (Input.GetKeyDown(k)){
-					controllerConnected = true;
+					controllerConnected = Input.GetJoystickNames().Length > 0;
 					Debug.Log(k.ToString());
 				}
 
