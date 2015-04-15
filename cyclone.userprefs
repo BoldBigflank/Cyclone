@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../hexagon/Assets/Scripts/GameManagerScript.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/HeadTrackingSampleActivity.cs">
     <Files>
-      <File FileName="../hexagon/Assets/Scripts/GameManagerScript.cs" Line="51" Column="20" />
+      <File FileName="Assets/SmoothLookAtDistance.js" Line="25" Column="15" />
+      <File FileName="Assets/HeadTrackingSampleActivity.cs" Line="76" Column="77" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

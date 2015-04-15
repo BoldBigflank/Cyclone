@@ -36,7 +36,6 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 	public float r = 1.25F;
 	float t;
 
-
 	 
     // Initialization
     void Start () {
@@ -69,7 +68,7 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
         GUI.skin.label.fontSize = 20;
         GUI.skin.label.fontStyle = FontStyle.Bold;
 
-        if (!HeadTrackingReceiver.isAvailable) {
+		if (!HeadTrackingReceiver.isAvailable) {
 //            GUI.Label (new Rect (15, 50, 500, 50), "Head tracking APIs are not supported on this device.");
             return;
         }
@@ -105,9 +104,7 @@ public class HeadTrackingSampleActivity : MonoBehaviour {
 //			cameraPosition.z = HeadTrackingReceiver.lastEvent.z * -1.0F;
 			cameraPosition.z = HeadTrackingReceiver.lastEvent.z;
 
-			if(Input.deviceOrientation == DeviceOrientation.LandscapeLeft){
-				cameraPosition = Vector3.Scale (cameraPosition, new Vector3(-1.0F, -1.0F, 1.0F));
-			}
+			cameraPosition = Vector3.Scale (cameraPosition, new Vector3(-1.0F, -1.0F, 1.0F));
 
 			mainCamera.transform.rotation = Quaternion.LookRotation( cameraPosition ) ;
 			// This will move the camera to the angle 
