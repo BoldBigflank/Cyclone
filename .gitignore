@@ -34,3 +34,6 @@ DerivedData
 
 # CocoaPods
 Pods
+
+# builds
+*.apk
