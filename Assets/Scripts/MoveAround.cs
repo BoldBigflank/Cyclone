@@ -52,7 +52,10 @@ public class MoveAround : MonoBehaviour {
 //				transform.RotateAround(Vector3.zero, Vector3.forward, rotateDirection * speed * Time.deltaTime); // Touch Input
 			} else {
 				// Rotate the sphere around the middle axis with <-/-> and A/D
-				yaw += Input.GetAxis("Horizontal") * speed * Time.deltaTime * reverseControls;
+				int axisDirection = 0;
+				if(Input.GetAxis("Horizontal") > 0.1F) axisDirection = 1;
+				if(Input.GetAxis("Horizontal") < -0.1F) axisDirection = -1;
+				yaw += axisDirection * speed * Time.deltaTime * reverseControls;
 //				transform.RotateAround(Vector3.zero, Vector3.forward, Input.GetAxis("Horizontal") * speed * Time.deltaTime); // Arrow keys
 
 			}

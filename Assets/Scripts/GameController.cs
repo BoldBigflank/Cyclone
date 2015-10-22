@@ -91,6 +91,7 @@ public class GameController : MonoBehaviour {
 		uiCanvas.enabled = false;
 		eventSystem.sendNavigationEvents = false;
 //		UnityEngine.Apple.TV.Remote.touchesEnabled = true;
+		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = true; // For control based on position
 
 		controllerConnected = Input.GetJoystickNames().Length > 0;
 		foreach(string s in Input.GetJoystickNames()){
@@ -142,7 +143,7 @@ public class GameController : MonoBehaviour {
 		uiCanvas.enabled = true;
 		eventSystem.sendNavigationEvents = true;
 		UnityEngine.Apple.TV.Remote.touchesEnabled = false; // For menu stuff
-		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = true; // For control based on position
+		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = false; // For control based on position
 
 		gameIsRunning = false;
 		betweenRoundGUI = true;
@@ -423,6 +424,7 @@ public class GameController : MonoBehaviour {
 	
 	void GameOver(){
 		UnityEngine.Apple.TV.Remote.touchesEnabled = false;
+		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = false; // For control based on position
 		uiCanvas.enabled = true;
 		eventSystem.sendNavigationEvents = true;
 
