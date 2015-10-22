@@ -369,8 +369,8 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 128, y: -384}
+  m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1136853909
 MonoBehaviour:
@@ -392,7 +392,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: .960784316, g: .960784316, b: .960784316, a: 1}
+    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
     m_PressedColor: {r: .784313738, g: .784313738, b: .784313738, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
@@ -410,7 +410,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1136853910}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1387004649}
+        m_MethodName: ToggleSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1136853910
@@ -541,10 +552,10 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -601,8 +612,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -200, y: -1}
-  m_SizeDelta: {x: 150, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 384, y: 256}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1306136242
 MonoBehaviour:
@@ -616,7 +627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 2
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -624,7 +635,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: .960784316, g: .960784316, b: .960784316, a: 1}
+    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
     m_PressedColor: {r: .784313738, g: .784313738, b: .784313738, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
@@ -642,7 +653,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1306136243}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1387004649}
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1306136243
@@ -689,7 +711,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1332272258
 RectTransform:
   m_ObjectHideFlags: 0
@@ -705,8 +727,8 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 150, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 384, y: 0}
+  m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1332272259
 MonoBehaviour:
@@ -728,7 +750,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: .960784316, g: .960784316, b: .960784316, a: 1}
+    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
     m_PressedColor: {r: .784313738, g: .784313738, b: .784313738, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
@@ -817,15 +839,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameFont: {fileID: 12800000, guid: e6294fdb62b514035af620e8b2cf5380, type: 3}
-  soundOn: {fileID: 2800000, guid: 2819becc727af43cd9b717fa09cf911a, type: 3}
-  soundOff: {fileID: 2800000, guid: 3ec997f1c33164667a66b5105b163242, type: 3}
-  controlReg: {fileID: 2800000, guid: 0ee73dcc7e47a45a39fb1e417514b0dd, type: 3}
-  controlInv: {fileID: 2800000, guid: 7367f7e90a48f48168c9b6d94fb6b2aa, type: 3}
-  playTexture: {fileID: 2800000, guid: 459d76345e58b40d0b657c1598359bd3, type: 3}
+  soundOn: {fileID: 21300000, guid: 2819becc727af43cd9b717fa09cf911a, type: 3}
+  soundOff: {fileID: 21300000, guid: 3ec997f1c33164667a66b5105b163242, type: 3}
+  controlReg: {fileID: 21300000, guid: 0ee73dcc7e47a45a39fb1e417514b0dd, type: 3}
+  controlInv: {fileID: 21300000, guid: 7367f7e90a48f48168c9b6d94fb6b2aa, type: 3}
+  playTexture: {fileID: 21300000, guid: 459d76345e58b40d0b657c1598359bd3, type: 3}
   aTexture: {fileID: 2800000, guid: fddf1dfc46a9a46858d1fe1d575b8fa8, type: 3}
   bTexture: {fileID: 2800000, guid: 88010a5b60f6c4bc0b32cd6a767124cb, type: 3}
   xTexture: {fileID: 2800000, guid: 2fc1ad829dec9447a8ecb38921da7b60, type: 3}
   yTexture: {fileID: 2800000, guid: 1d1829b5eaa5f4ee29571feaa2429035, type: 3}
+  uiCanvas: {fileID: 1255844725}
+  soundsImage: {fileID: 1136853910}
+  controlsImage: {fileID: 2056451249}
+  playButton: {fileID: 1306136242}
   scrollPosition: {x: 0, y: 0}
   crashSound: {fileID: 8300000, guid: c1c8d46fe86264143935de21c64d67af, type: 3}
   timeStyle:
@@ -1776,7 +1802,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2029285045
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2071,8 +2097,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -128, y: -384}
+  m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &2056451248
 MonoBehaviour:
@@ -2094,7 +2120,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: .960784316, g: .960784316, b: .960784316, a: 1}
+    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
     m_PressedColor: {r: .784313738, g: .784313738, b: .784313738, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
@@ -2112,7 +2138,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2056451249}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1387004649}
+        m_MethodName: ToggleControls
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &2056451249
