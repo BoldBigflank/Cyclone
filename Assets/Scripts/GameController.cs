@@ -81,6 +81,7 @@ public class GameController : MonoBehaviour {
 	float tColor;
 	Light cameraLight;
 	Color obstacleColorMix = new Color(0.3F, 0.3F, 0.3F);
+	public static Color musicColorMix = new Color (0.0F, 0.0F, 0.0F);
 
 	// Game over button hidden
 	float playButtonDelay = 1.0F;
@@ -255,7 +256,7 @@ public class GameController : MonoBehaviour {
 		if (tColor < 1){ // if end color not reached yet...
 			tColor += Time.deltaTime / colorDuration; // advance timer at the right speed
 			Color endColor = (gameIsRunning) ? colors[(colorIndex+1)%colors.Count] : Color.black;
-			newColor = Color.Lerp(currentColor, endColor, tColor);
+			newColor = Color.Lerp(currentColor, endColor, tColor) + musicColorMix;
 			Color obstacleColor = newColor + obstacleColorMix;
 			cameraLight.color = newColor;
 			foreach (Rigidbody segment in segments){

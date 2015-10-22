@@ -6,7 +6,7 @@ public class CameraPulse : MonoBehaviour {
 	private float[] curValues = new float[8];
 
 	public float intensity = 10.0F;
-	public float damping = 2.0F;
+	public float damping = 6.0F;
 
 	public Texture2D SampleImg;
 
@@ -56,28 +56,29 @@ public class CameraPulse : MonoBehaviour {
 			ss += curValues[i].ToString("0.000")+",";
 		}
 
-		float newFOV = baseFOV - intensity * curValues[0];
-		if(newFOV > cameraFOV)
-			cameraFOV = Mathf.Lerp(cameraFOV, newFOV, Time.deltaTime* damping);
+//		float newFOV = baseFOV - intensity * curValues[0];
+		float shine = Mathf.Max(0.0F, curValues[4] - 0.3F);
+		Color newColor = new Color(curValues[4], curValues[4], curValues[4]);
+		if(newColor.r < GameController.musicColorMix.r)
+			GameController.musicColorMix = Color.Lerp(GameController.musicColorMix, newColor, Time.deltaTime* damping);
 		else
-			cameraFOV = newFOV;
-		GetComponent<Camera>().fieldOfView = cameraFOV;
+			GameController.musicColorMix = newColor;
 	}
 
 //	// Equalizer visualization
-//	void OnGUI()
-//	{
-//		
-//		GUI.Label(new Rect(150, 600, 600, 500), ss);
-//		
-//		int ImageHeight = 600;
-//		
-//		for (int i = 0; i < 8; i++ )
-//		{
-//			float Height = ImageHeight * (1 - curValues[i]);
-//			GUI.DrawTexture(new Rect(i * 50, 100 + Height, 45, ImageHeight - Height), SampleImg); 
-//		}
-//
-//
-//	}
+	void OnGUI()
+	{
+		
+		GUI.Label(new Rect(150, 600, 600, 500), ss);
+		
+		int ImageHeight = 600;
+		
+		for (int i = 0; i < 8; i++ )
+		{
+			float Height = ImageHeight * (1 - curValues[i]);
+			GUI.DrawTexture(new Rect(i * 50, 100 + Height, 45, ImageHeight - Height), SampleImg); 
+		}
+
+
+	}
 }
