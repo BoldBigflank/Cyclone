@@ -24,6 +24,9 @@ public class GameController : MonoBehaviour {
 	public Image controlsImage;
 	public Button playButton;
 	private EventSystem eventSystem;
+	public Text bestText;
+	public Text lastText;
+
 
 	public static bool gameIsRunning;
 	public static bool betweenRoundGUI;
@@ -139,6 +142,7 @@ public class GameController : MonoBehaviour {
 		uiCanvas.enabled = true;
 		eventSystem.sendNavigationEvents = true;
 		UnityEngine.Apple.TV.Remote.touchesEnabled = false; // For menu stuff
+		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = true; // For control based on position
 
 		gameIsRunning = false;
 		betweenRoundGUI = true;
@@ -221,6 +225,8 @@ public class GameController : MonoBehaviour {
 
 		soundsImage.sprite = (sound) ? soundOn : soundOff;
 		controlsImage.sprite = (reverseControls == 1) ? controlReg : controlInv;
+		bestText.text = "Best\n" + playerBest.ToString ("0.00");
+		lastText.text = "";
 	}
 
 
@@ -440,6 +446,8 @@ public class GameController : MonoBehaviour {
 		}
 
 		PlayerPrefs.Save ();
+		bestText.text = "Best\n" + playerBest.ToString ("0.00");
+		lastText.text = "Last\n" + score.ToString ("0.00");
 	}
 
 	private RaycastHit hit;
