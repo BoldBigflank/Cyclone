@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SocialPlatforms;
@@ -6,15 +8,22 @@ using UnityEngine.SocialPlatforms;
 public class GameController : MonoBehaviour {
 	// Game Variables
 	public Font gameFont;
-	public Texture soundOn;
-	public Texture soundOff;
-	public Texture controlReg;
-	public Texture controlInv;
-	public Texture playTexture;
+	public Sprite soundOn;
+	public Sprite soundOff;
+	public Sprite controlReg;
+	public Sprite controlInv;
+	public Sprite playTexture;
 	public Texture aTexture;
 	public Texture bTexture;
 	public Texture xTexture;
 	public Texture yTexture;
+
+	// UI Stuff
+	public Canvas uiCanvas;
+	public Image soundsImage;
+	public Image controlsImage;
+	public Button playButton;
+	private EventSystem eventSystem;
 
 	public static bool gameIsRunning;
 	public static bool betweenRoundGUI;
@@ -74,7 +83,12 @@ public class GameController : MonoBehaviour {
 	float playButtonDelay = 1.0F;
 	float playButtonTime = 0.0F;
 	
-	void StartGame(){
+	public void StartGame(){
+		if(gameIsRunning) return;
+		uiCanvas.enabled = false;
+		eventSystem.sendNavigationEvents = false;
+//		UnityEngine.Apple.TV.Remote.touchesEnabled = true;
+
 		controllerConnected = Input.GetJoystickNames().Length > 0;
 		foreach(string s in Input.GetJoystickNames()){
 			Debug.Log ("Joystick: " + s);
@@ -121,6 +135,10 @@ public class GameController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+		uiCanvas.enabled = true;
+		eventSystem.sendNavigationEvents = true;
+		UnityEngine.Apple.TV.Remote.touchesEnabled = false; // For menu stuff
 
 		gameIsRunning = false;
 		betweenRoundGUI = true;
@@ -201,10 +219,8 @@ public class GameController : MonoBehaviour {
 		reverseControls = PlayerPrefs.GetInt ("reverse");
 		GetLeaderboard();
 
-		// Hide touch control buttons
-		if(controllerConnected){
-
-		}
+		soundsImage.sprite = (sound) ? soundOn : soundOff;
+		controlsImage.sprite = (reverseControls == 1) ? controlReg : controlInv;
 	}
 
 
@@ -367,23 +383,23 @@ public class GameController : MonoBehaviour {
 
 			}
 
-			// Sound
-			if(Input.GetKeyDown(KeyCode.JoystickButton2) || Input.GetKeyDown(KeyCode.JoystickButton18) || Input.GetKeyDown (KeyCode.LeftArrow)){
-				sound = !sound;
-				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
-				AudioListener.volume = (sound) ? 1.0F:0.0F;
-			}
-
-			// Control
-			if(Input.GetKeyDown(KeyCode.JoystickButton3) || Input.GetKeyDown(KeyCode.JoystickButton19) || Input.GetKeyDown (KeyCode.UpArrow)){
-				reverseControls = (reverseControls == 1) ? -1: 1;
-				PlayerPrefs.SetInt("reverse", reverseControls);
-			}
-
-			// Play
-			if(Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton16) || Input.GetKeyDown(KeyCode.DownArrow)){
-				StartGame ();
-			}
+//			// Sound
+//			if(Input.GetKeyDown(KeyCode.JoystickButton2) || Input.GetKeyDown(KeyCode.JoystickButton18) || Input.GetKeyDown (KeyCode.LeftArrow)){
+//				sound = !sound;
+//				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
+//				AudioListener.volume = (sound) ? 1.0F:0.0F;
+//			}
+//
+//			// Control
+//			if(Input.GetKeyDown(KeyCode.JoystickButton3) || Input.GetKeyDown(KeyCode.JoystickButton19) || Input.GetKeyDown (KeyCode.UpArrow)){
+//				reverseControls = (reverseControls == 1) ? -1: 1;
+//				PlayerPrefs.SetInt("reverse", reverseControls);
+//			}
+//
+//			// Play
+//			if(Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton16) || Input.GetKeyDown(KeyCode.DownArrow)){
+//				StartGame ();
+//			}
 
 		}
 
@@ -400,6 +416,12 @@ public class GameController : MonoBehaviour {
 	}
 	
 	void GameOver(){
+		UnityEngine.Apple.TV.Remote.touchesEnabled = false;
+		uiCanvas.enabled = true;
+		eventSystem.sendNavigationEvents = true;
+
+		playButton.Select();
+
 		gameIsRunning = false;
 		SetColor(Color.white);
 //		player.GetComponent<ParticleSystem>().Stop();
@@ -428,70 +450,67 @@ public class GameController : MonoBehaviour {
 
 	}
 
+	public void ToggleSound(){
+		sound = !sound;
+		PlayerPrefs.SetInt("sound", (sound) ? 1:0);
+		AudioListener.volume = (sound) ? 1.0F:0.0F;
+		soundsImage.sprite = (sound) ? soundOn : soundOff;
+	}
+
+	public void ToggleControls(){
+		reverseControls = (reverseControls == 1) ? -1: 1;
+		PlayerPrefs.SetInt("reverse", reverseControls);
+		controlsImage.sprite = (reverseControls == 1) ? controlReg : controlInv;
+	}
 
 	void OnGUI(){
 		if(!gameIsRunning && playButtonTime <= 0.0F){  // Between rounds
-//			playerName = GUI.TextField (new Rect(Screen.width/4, 0, Screen.width/2, Screen.height * 0.1F), playerName, 16, buttonStyle);
-//			if(GUI.changed) {
-//				playerName = playerName.ToLower();
-//				PlayerPrefs.SetString("name", playerName);
-//				ProcessLeaderboard("");
+////			playerName = GUI.TextField (new Rect(Screen.width/4, 0, Screen.width/2, Screen.height * 0.1F), playerName, 16, buttonStyle);
+////			if(GUI.changed) {
+////				playerName = playerName.ToLower();
+////				PlayerPrefs.SetString("name", playerName);
+////				ProcessLeaderboard("");
+////			}
+//
+//			Texture soundTexture = (sound) ? soundOn : soundOff;
+//			if(GUI.Button(new Rect(Screen.width * 0.30F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), soundTexture, buttonStyle)){
+//				sound = !sound;
+//				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
+//				AudioListener.volume = (sound) ? 1.0F:0.0F;
 //			}
-
-			Texture soundTexture = (sound) ? soundOn : soundOff;
-			if(GUI.Button(new Rect(Screen.width * 0.30F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), soundTexture, buttonStyle)){
-				sound = !sound;
-				PlayerPrefs.SetInt("sound", (sound) ? 1:0);
-				AudioListener.volume = (sound) ? 1.0F:0.0F;
-			}
-
-			Texture controlsTexture = (reverseControls == 1) ? controlReg : controlInv;
-			if(GUI.Button(new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), controlsTexture, buttonStyle)){
-				reverseControls = (reverseControls == 1) ? -1: 1;
-				PlayerPrefs.SetInt("reverse", reverseControls);
-			}
-
-			if(GUI.Button(new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.20F, Screen.width* 0.10F), playTexture, buttonStyle)){
-				StartGame();
-			}
-
-
-
-//			if(dicePlusConnected){
-//				GUI.Label(new Rect(Screen.width * 0.75F, Screen.height*0.75F, Screen.width*0.25F, Screen.height * 0.25F), "Hold the 6 toward you as you rotate to steer.", infoStyle);
+//
+//			Texture controlsTexture = (reverseControls == 1) ? controlReg : controlInv;
+//			if(GUI.Button(new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.10F, Screen.width* 0.10F), controlsTexture, buttonStyle)){
+//				reverseControls = (reverseControls == 1) ? -1: 1;
+//				PlayerPrefs.SetInt("reverse", reverseControls);
 //			}
-//			if (score > 0){
-//				GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
-//				GUI.Label(new Rect(Screen.width/2, Screen.height*4/5, Screen.width/2, Screen.height/5), score.ToString("F1") + " s", timeStyle);
+//
+//			if(GUI.Button(new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.20F, Screen.width* 0.10F), playTexture, buttonStyle)){
+//				StartGame();
 //			}
-
-			GUI.Label (new Rect(Screen.width * 0.2F, Screen.height * 0.25F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F3") + " s", buttonStyle);
-
-			// If there is a controller, show the buttons
-			if(controllerConnected){
-				// Sound (x)
-				GUI.Label (new Rect(Screen.width * 0.30F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), xTexture);
-				// Controls (y)
-				GUI.Label (new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), yTexture);
-				// Play (a)
-				GUI.Label (new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.05F, Screen.width* 0.05F), aTexture);
-			} else {
-				if(GUI.Button(new Rect(Screen.width * 0.65F, Screen.height * 0.85F, Screen.width * 0.35F, Screen.width* 0.05F), "More Games", buttonStyle)){
-					Application.OpenURL("http://bold-it.com/games-by-alex-swan/");
-				}
-			}
-
-
-
-			// This stuff is only after the first death
-			if(gameStarted == true){
-				GUI.Label (new Rect(Screen.width * 0.5F, Screen.height * 0.25F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F3") + " s", buttonStyle);
-
-//				Rect leaderboardRect = new Rect(0,0,Screen.width*0.45F, (1+leaderboardCount) * timeStyle.lineHeight);
-//				scrollPosition = GUI.BeginScrollView(new Rect(Screen.width*0.1F, Screen.height * 0.1F, Screen.width * 0.5F, Screen.height * 0.6F), scrollPosition, leaderboardRect, false, false);
-//				GUI.Label (leaderboardRect,leaderboardString, timeStyle);
-//				GUI.EndScrollView();
-			}
+//
+//			GUI.Label (new Rect(Screen.width * 0.2F, Screen.height * 0.25F, Screen.width * 0.3F, Screen.height * 0.2F), "Best\n" + playerBest.ToString("F3") + " s", buttonStyle);
+//
+//			// If there is a controller, show the buttons
+//			if(controllerConnected){
+//				// Sound (x)
+//				GUI.Label (new Rect(Screen.width * 0.30F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), xTexture);
+//				// Controls (y)
+//				GUI.Label (new Rect(Screen.width * 0.45F, Screen.height * 0.05F, Screen.width * 0.05F, Screen.width* 0.05F), yTexture);
+//				// Play (a)
+//				GUI.Label (new Rect(Screen.width * 0.4F, Screen.height * 0.65F, Screen.width * 0.05F, Screen.width* 0.05F), aTexture);
+//			} else {
+//				if(GUI.Button(new Rect(Screen.width * 0.65F, Screen.height * 0.85F, Screen.width * 0.35F, Screen.width* 0.05F), "More Games", buttonStyle)){
+//					Application.OpenURL("http://bold-it.com/games-by-alex-swan/");
+//				}
+//			}
+//
+//
+//
+//			// This stuff is only after the first death
+//			if(gameStarted == true){
+//				GUI.Label (new Rect(Screen.width * 0.5F, Screen.height * 0.25F, Screen.width * 0.3F, Screen.height * 0.2F), "Last\n" + score.ToString("F3") + " s", buttonStyle);
+//			}
 		} else { // Gameplay
 //			GUI.skin.label.alignment = TextAnchor.LowerCenter;
 			GUI.Label(new Rect(0, Screen.height*4/5, Screen.width/2, Screen.height/5), "Time: ", labelStyle);
