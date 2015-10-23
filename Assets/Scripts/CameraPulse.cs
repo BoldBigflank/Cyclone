@@ -66,19 +66,19 @@ public class CameraPulse : MonoBehaviour {
 	}
 
 //	// Equalizer visualization
-	void OnGUI()
-	{
-		
-		GUI.Label(new Rect(150, 600, 600, 500), ss);
-		
-		int ImageHeight = 600;
-		
-		for (int i = 0; i < 8; i++ )
-		{
-			float Height = ImageHeight * (1 - curValues[i]);
-			GUI.DrawTexture(new Rect(i * 50, 100 + Height, 45, ImageHeight - Height), SampleImg); 
-		}
-
-
-	}
+//	void OnGUI()
+//	{
+//		
+//		GUI.Label(new Rect(150, 600, 600, 500), ss);
+//		
+//		int ImageHeight = 600;
+//		
+//		for (int i = 0; i < 8; i++ )
+//		{
+//			float Height = ImageHeight * (1 - curValues[i]);
+//			GUI.DrawTexture(new Rect(i * 50, 100 + Height, 45, ImageHeight - Height), SampleImg); 
+//		}
+//
+//
+//	}
 }

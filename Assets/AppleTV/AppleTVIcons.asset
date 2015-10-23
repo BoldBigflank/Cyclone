@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e37b63fcc5384431ac5f0ba2a28ac3e, type: 3}
+  m_Name: AppleTVIcons
+  m_EditorClassIdentifier: 
+  _SmallIcons:
+  - {fileID: 2800000, guid: 6e0090fbf7c4444b4b95fc9a3e7cc368, type: 3}
+  - {fileID: 2800000, guid: c9d3600556dda43598302a2999bcf254, type: 3}
+  - {fileID: 2800000, guid: 6c7bafa88c0c04390b72228178fe9618, type: 3}
+  - {fileID: 2800000, guid: 1461e511bf9794188b0a9b75a0ab9b74, type: 3}
+  - {fileID: 2800000, guid: 6ded23765d6c943179a2a0766c4b5daf, type: 3}
+  _LargeIcons:
+  - {fileID: 2800000, guid: 6d742ee7fe5374515b37666ea59602be, type: 3}
+  - {fileID: 2800000, guid: 68c6129e52e024f839e0aee5aaec65a1, type: 3}
+  _TopShelfIcon: {fileID: 2800000, guid: 493fb7d5fc07642c8a804399f609d073, type: 3}
+  _GameCenterDashboard: {fileID: 0}
+  _LeaderboardIcons: []

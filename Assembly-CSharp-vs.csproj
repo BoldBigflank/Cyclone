@@ -46,6 +46,8 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\AppleTV\AppleTVIcons.cs" />
+     <Compile Include="Assets\AppleTV\MiniJSON.cs" />
      <Compile Include="Assets\Scripts\CameraPulse.cs" />
      <Compile Include="Assets\Scripts\GameCircleScript.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
