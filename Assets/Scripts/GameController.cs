@@ -145,6 +145,7 @@ public class GameController : MonoBehaviour {
 		eventSystem.sendNavigationEvents = true;
 		UnityEngine.Apple.TV.Remote.touchesEnabled = false; // For menu stuff
 		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = false; // For control based on position
+		UnityEngine.Apple.TV.Remote.allowExitToHome = true;
 
 		gameIsRunning = false;
 		betweenRoundGUI = true;
