@@ -73,7 +73,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.alexboldit.cyclone
-  bundleVersion: 0.3.0
+  bundleVersion: 0.3.2
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0

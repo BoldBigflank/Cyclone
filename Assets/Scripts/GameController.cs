@@ -26,9 +26,11 @@ public class GameController : MonoBehaviour {
 	private EventSystem eventSystem;
 	public Text bestText;
 	public Text lastText;
+	bool allowExitToHome;
 
 
 	public static bool gameIsRunning;
+	public static bool paused;
 	public static bool betweenRoundGUI;
 	public static bool controllerConnected;
 	public static bool headTracking;
@@ -86,13 +88,20 @@ public class GameController : MonoBehaviour {
 	// Game over button hidden
 	float playButtonDelay = 1.0F;
 	float playButtonTime = 0.0F;
-	
-	public void StartGame(){
+
+	public void StartButton(){
+		if(paused){
+			HideMenu ();
+			Time.timeScale = 1.0F;
+			paused = false;
+		} else {
+			StartGame ();
+		}
+	}
+
+	void StartGame(){
 		if(gameIsRunning) return;
-		uiCanvas.enabled = false;
-		eventSystem.sendNavigationEvents = false;
-//		UnityEngine.Apple.TV.Remote.touchesEnabled = true;
-		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = true; // For control based on position
+		HideMenu ();
 
 		controllerConnected = Input.GetJoystickNames().Length > 0;
 		foreach(string s in Input.GetJoystickNames()){
@@ -129,6 +138,7 @@ public class GameController : MonoBehaviour {
 //		playButton.SetActive(false);
 
 		gameIsRunning = true;
+		paused = false;
 		betweenRoundGUI = false;
 		gameStarted = true;
 
@@ -137,17 +147,51 @@ public class GameController : MonoBehaviour {
 	void Awake() {
 		Application.targetFrameRate = 60;
 	}
-	
+
+	void ShowMenu () {
+		UnityEngine.Apple.TV.Remote.touchesEnabled = false;
+		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = false; // For control based on position
+		uiCanvas.enabled = true;
+		eventSystem.sendNavigationEvents = true;
+		
+		playButton.Select();
+		allowExitToHome = true;
+		StartCoroutine( "EnableExitOnMenu");
+	}
+
+	void HideMenu () {
+		// Pause Button
+		uiCanvas.enabled = false;
+		eventSystem.sendNavigationEvents = false;
+		//		UnityEngine.Apple.TV.Remote.touchesEnabled = true;
+		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = true; // For control based on position
+		DisableExitOnMenu();
+	}
+
+	IEnumerator EnableExitOnMenu ()
+	{
+		float start = Time.realtimeSinceStartup;
+		while (Time.realtimeSinceStartup < start + 0.1F) {
+			yield return null;
+		}
+
+		UnityEngine.Apple.TV.Remote.allowExitToHome = allowExitToHome;
+		//next menu button press will suspend the game
+	}
+	void DisableExitOnMenu ()
+	{
+		allowExitToHome = false;
+		UnityEngine.Apple.TV.Remote.allowExitToHome = allowExitToHome;
+		//next menu button press will NOT suspend the game and can be used for navigation
+	}
+
 	// Use this for initialization
 	void Start () {
 		eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
-		uiCanvas.enabled = true;
-		eventSystem.sendNavigationEvents = true;
-		UnityEngine.Apple.TV.Remote.touchesEnabled = false; // For menu stuff
-		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = false; // For control based on position
-		UnityEngine.Apple.TV.Remote.allowExitToHome = true;
+		ShowMenu ();
 
 		gameIsRunning = false;
+		paused = false;
 		betweenRoundGUI = true;
 		controllerConnected = Input.GetJoystickNames().Length > 0;
 		headTracking = false;
@@ -252,6 +296,28 @@ public class GameController : MonoBehaviour {
 		// Back button quits
 		if (Input.GetKeyDown(KeyCode.Escape)) 
 			Application.Quit(); 
+
+		if(Input.GetButtonUp ("Menu")){
+
+			if(gameIsRunning && !paused){
+				// Pause button AND Menu button
+				paused = true;
+				Time.timeScale = 0.0F;
+				ShowMenu ();
+			} 
+		}
+
+		if(Input.GetButtonUp ("Cancel")){
+			
+			if(gameIsRunning && !paused){
+				// Pause button AND Menu button
+				paused = true;
+				Time.timeScale = 0.0F;
+				ShowMenu ();
+			} else {
+				StartButton ();
+			}
+		}
 
 		// Updating the color
 		if (tColor < 1){ // if end color not reached yet...
@@ -364,7 +430,7 @@ public class GameController : MonoBehaviour {
 
 		}
 
-		if(!gameIsRunning && Input.touchCount == 1){ // Scrolling the leaderboard
+		if(!paused && !gameIsRunning && Input.touchCount == 1){ // Scrolling the leaderboard
 			if (Input.touches[0].phase == TouchPhase.Moved)
 			{
 				// dragging
@@ -425,14 +491,8 @@ public class GameController : MonoBehaviour {
 	}
 	
 	void GameOver(){
-		UnityEngine.Apple.TV.Remote.touchesEnabled = false;
-		UnityEngine.Apple.TV.Remote.reportAbsoluteDpadValues = false; // For control based on position
-		uiCanvas.enabled = true;
-		eventSystem.sendNavigationEvents = true;
-
-		playButton.Select();
-
 		gameIsRunning = false;
+		paused = false;
 		SetColor(Color.white);
 //		player.GetComponent<ParticleSystem>().Stop();
 		playButtonTime = playButtonDelay;
@@ -452,6 +512,7 @@ public class GameController : MonoBehaviour {
 		PlayerPrefs.Save ();
 		bestText.text = "Best\n" + playerBest.ToString ("0.00");
 		lastText.text = "Last\n" + score.ToString ("0.00");
+		ShowMenu ();
 	}
 
 	private RaycastHit hit;
